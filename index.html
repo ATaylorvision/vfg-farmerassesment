@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Farm Instincts Strengths Assessment</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; background: #1c1917; color: #e7e5e4; min-height: 100vh; }
+  button, input { font-family: Georgia, serif; }
+  #page-home {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #78350f 0%, #1c1917 60%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px; text-align: center;
+  }
+  #page-home .logo { font-size: 64px; margin-bottom: 12px; }
+  #page-home h1 { color: #fef3c7; font-size: 32px; margin-bottom: 8px; }
+  #page-home h2 { color: #d97706; font-size: 17px; font-weight: normal; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; }
+  #page-home p { color: #d6d3d1; font-size: 15px; max-width: 420px; line-height: 1.7; margin-bottom: 28px; }
+  .arch-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 28px; }
+  .arch-chip { background: rgba(255,255,255,0.08); color: #fef3c7; padding: 6px 13px; border-radius: 20px; font-size: 13px; }
+  .btn-primary { background: #d97706; color: #fff; border: none; border-radius: 10px; padding: 15px 38px; font-size: 18px; font-weight: bold; cursor: pointer; letter-spacing: 1px; }
+  .btn-primary:hover { background: #b45309; }
+  #page-name { min-height: 100vh; background: #1c1917; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+  #page-name .icon { font-size: 48px; margin-bottom: 16px; }
+  #page-name h2 { color: #fef3c7; font-size: 24px; margin-bottom: 8px; }
+  #page-name p { color: #a8a29e; margin-bottom: 24px; font-size: 15px; }
+  #name-input { background: #292524; border: 2px solid #57534e; border-radius: 8px; padding: 12px 20px; font-size: 17px; color: #fef3c7; width: 280px; outline: none; margin-bottom: 20px; text-align: center; display: block; }
+  #name-input:focus { border-color: #d97706; }
+  #btn-name-next { background: #57534e; color: #fff; border: none; border-radius: 8px; padding: 14px 36px; font-size: 16px; font-weight: bold; cursor: default; }
+  #btn-name-next.active { background: #d97706; cursor: pointer; }
+  #btn-name-next.active:hover { background: #b45309; }
+  #page-quiz { min-height: 100vh; background: #1c1917; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+  .quiz-inner { width: 100%; max-width: 560px; }
+  .quiz-meta { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .quiz-meta span { color: #a8a29e; font-size: 13px; }
+  .quiz-meta .pct { color: #d97706; font-weight: bold; }
+  .progress-bar { background: #292524; border-radius: 4px; height: 6px; margin-bottom: 32px; overflow: hidden; }
+  .progress-fill { background: #d97706; height: 100%; border-radius: 4px; transition: width 0.3s; }
+  .question-card { background: #292524; border-radius: 16px; padding: 32px 28px; margin-bottom: 28px; }
+  .question-card p { color: #fef3c7; font-size: 19px; line-height: 1.6; font-style: italic; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn { background: rgba(255,255,255,0.05); border: 2px solid #44403c; border-radius: 10px; padding: 13px 18px; color: #e7e5e4; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left; transition: all 0.15s; }
+  .opt-btn:hover { background: rgba(217,119,6,0.2); border-color: #d97706; }
+  .opt-num { background: #44403c; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #d97706; font-weight: bold; flex-shrink: 0; }
+  .btn-back { margin-top: 20px; background: transparent; border: none; color: #78716c; font-size: 14px; cursor: pointer; }
+  .btn-back:hover { color: #a8a29e; }
+  #page-result { min-height: 100vh; background: #1c1917; padding: 24px 16px; }
+  .result-inner { max-width: 640px; margin: 0 auto; }
+  .result-header { border-radius: 16px; padding: 28px 24px; margin-bottom: 20px; text-align: center; }
+  .result-header .big-emoji { font-size: 56px; margin-bottom: 8px; }
+  .result-header .label { color: #a8a29e; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .result-header h1 { color: #fef3c7; font-size: 28px; margin-bottom: 6px; }
+  .archetype-badge { display: inline-block; border-radius: 20px; padding: 6px 18px; margin-bottom: 10px; }
+  .archetype-badge span { color: #fff; font-weight: bold; font-size: 18px; }
+  .result-header .tagline { color: #d6d3d1; font-size: 15px; font-style: italic; margin-top: 4px; }
+  .result-header .secondary { color: #78716c; font-size: 13px; margin-top: 8px; }
+  .result-header .secondary strong { color: #a8a29e; }
+  .card { background: #292524; border-radius: 14px; padding: 22px 20px; margin-bottom: 20px; }
+  .card h2 { color: #d97706; font-size: 15px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+  .card p { color: #d6d3d1; font-size: 15px; line-height: 1.7; margin-bottom: 12px; }
+  .card ul { padding-left: 18px; }
+  .card ul li { color: #e7e5e4; font-size: 14px; line-height: 1.9; }
+  .card-green { background: rgba(20,83,45,0.13); border: 1px solid #166534; border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .card-green h2 { color: #4ade80; font-size: 15px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .card-green p { color: #d6d3d1; font-size: 15px; line-height: 1.7; }
+  .card-red { background: rgba(127,29,29,0.13); border: 1px solid #991b1b; border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .card-red h2 { color: #f87171; font-size: 15px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .card-red p { color: #d6d3d1; font-size: 14px; line-height: 1.7; margin-bottom: 8px; }
+  .card-red strong { color: #fca5a5; }
+  .card-blue { background: rgba(30,58,95,0.13); border: 1px solid #1d4ed8; border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .card-blue h2 { color: #60a5fa; font-size: 15px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .card-blue p { color: #d6d3d1; font-size: 15px; line-height: 1.7; }
+  .card-secondary { background: #292524; border-radius: 14px; padding: 20px; margin-bottom: 28px; }
+  .card-secondary h2 { color: #a8a29e; font-size: 15px; margin-bottom: 10px; }
+  .card-secondary p { color: #a8a29e; font-size: 14px; line-height: 1.7; }
+  .score-row { margin-bottom: 14px; }
+  .score-label-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .score-label-row .lbl { color: #e7e5e4; font-size: 14px; }
+  .score-label-row .val { font-size: 13px; font-weight: bold; }
+  .bar-bg { background: #1c1917; border-radius: 4px; height: 10px; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .btn-restart { width: 100%; background: #292524; border: 2px solid #44403c; border-radius: 10px; padding: 16px; color: #a8a29e; font-size: 15px; cursor: pointer; margin-bottom: 40px; }
+  .btn-restart:hover { border-color: #78716c; color: #d6d3d1; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="page-home">
+  <div class="logo">🌾</div>
+  <h1>Farm Instincts</h1>
+  <h2>Strengths Assessment</h2>
+  <p>Find out what you're naturally built for on a farm. 28 plain-language questions. Takes under 15 minutes. No jargon, no guesswork.</p>
+  <div class="arch-chips">
+    <span class="arch-chip">🎯 Hunter</span><span class="arch-chip">🌱 Steward</span><span class="arch-chip">🔧 Mechanic</span><span class="arch-chip">🐄 Caretaker</span><span class="arch-chip">👁️ Scout</span><span class="arch-chip">📋 Organiser</span><span class="arch-chip">⚙️ Resourcer</span><span class="arch-chip">🤠 Drover</span>
+  </div>
+  <button class="btn-primary" onclick="showPage('name')">Start Assessment →</button>
+</div>
+
+<div id="page-name" class="hidden">
+  <div class="icon">👤</div>
+  <h2>Who's taking this?</h2>
+  <p>Enter your name to personalise your report.</p>
+  <input id="name-input" type="text" placeholder="Your name..." oninput="onNameInput()" onkeydown="if(event.key==='Enter') tryNext()" />
+  <button id="btn-name-next" onclick="tryNext()">Let's Go →</button>
+</div>
+
+<div id="page-quiz" class="hidden">
+  <div class="quiz-inner">
+    <div class="quiz-meta"><span id="q-counter">Question 1 of 28</span><span class="pct" id="q-pct">0% done</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="question-card"><p id="q-text"></p></div>
+    <div class="options" id="options-container"></div>
+    <button class="btn-back" onclick="goBack()">← Back</button>
+  </div>
+</div>
+
+<div id="page-result" class="hidden">
+  <div class="result-inner">
+    <div class="result-header" id="result-header">
+      <div class="big-emoji" id="r-emoji"></div>
+      <p class="label">Farm Instincts Report</p>
+      <h1 id="r-name"></h1>
+      <div class="archetype-badge" id="r-badge"><span id="r-primary-name"></span></div>
+      <p class="tagline" id="r-tagline"></p>
+      <p class="secondary">Secondary instinct: <strong id="r-secondary-name"></strong></p>
+    </div>
+    <div class="card"><h2>Where You're Strongest</h2><div id="scores-container"></div></div>
+    <div class="card"><h2>What You Do Best</h2><p id="r-desc"></p><ul id="r-goodat"></ul></div>
+    <div class="card-green"><h2>Best Use on a Farm</h2><p id="r-bestfit"></p></div>
+    <div class="card-red">
+      <h2>Watch-Outs</h2>
+      <p><strong>Gets frustrated by:</strong> <span id="r-frustrated"></span></p>
+      <p><strong>Tends to struggle with:</strong> <span id="r-struggles"></span></p>
+      <p><strong>In the wrong role:</strong> <span id="r-wrongrole"></span></p>
+    </div>
+    <div class="card-blue"><h2>For Farm Owners: How to Get the Most from This Person</h2><p id="r-manage"></p></div>
+    <div class="card-secondary"><h2 id="r-sec-title"></h2><p id="r-sec-desc"></p></div>
+    <button class="btn-restart" onclick="restart()">↩ Take Assessment Again</button>
+  </div>
+</div>
+
+<script>
+const ARCHETYPES = {
+  Hunter:    { tagline:"Gets things done. Fast.", color:"#b45309", emoji:"🎯", desc:"The Hunter moves quick and doesn't second-guess. When there's a job to do, they're already halfway through it. They thrive on action, short turnarounds, and visible results. They're the ones who get the hay baled before the storm hits.", goodAt:["High-output harvest work","Time-sensitive tasks","Leading sprints of physical labor","Pushing the team to finish"], bestFit:"Row crop harvest, fast-turn livestock moves, labour-intensive seasonal pushes", frustrated:"Waiting, over-planning, repetitive low-urgency tasks", struggles:"Slowing down for detail work, being patient with animals, long-horizon planning", wrongRole:"Gets bored, cuts corners, becomes a disruptive force", manage:"Give them clear goals and short deadlines. Pair them with someone detail-oriented. Celebrate output. Don't slow them down with too much process." },
+  Steward:   { tagline:"Takes care of what matters long-term.", color:"#15803d", emoji:"🌱", desc:"The Steward thinks in seasons, not days. They care deeply about soil, pasture condition, and animal welfare. They do things right the first time because they know shortcuts cost you later.", goodAt:["Soil and pasture management","Herd health monitoring","Rotational systems","Long-term planning"], bestFit:"Grazing management, soil health programs, regenerative or organic operations", frustrated:"Being rushed, having their work undone, operators who chase short-term yield over long-term health", struggles:"Fast-paced harvest, high-pressure output environments", wrongRole:"Quietly disengages; does the minimum; loses pride in the work", manage:"Involve them in long-term decisions. Ask their opinion on land and herd condition. Give them time to do things right. Don't rush or override them constantly." },
+  Mechanic:  { tagline:"If it's broken, they'll fix it.", color:"#1d4ed8", emoji:"🔧", desc:"The Mechanic is drawn to anything with an engine, a hydraulic line, or a wiring loom. They're not just fixers — they notice when something's about to break before it does. Machinery is their language.", goodAt:["Equipment maintenance and repair","Diagnosing mechanical problems","Operating complex machinery","Keeping downtime low"], bestFit:"Machinery-heavy operations: large cropping, feedlots, irrigation infrastructure", frustrated:"Dull hand tools, no maintenance schedule, being pulled away mid-repair", struggles:"Livestock handling, paperwork, repetitive manual labor", wrongRole:"Frustrated and underused; valuable skills go to waste", manage:"Make sure their skills are properly used. Give them a maintenance schedule and the tools they need. Respect their judgment on equipment. Keep them out of livestock roles if possible." },
+  Caretaker: { tagline:"Animals are in good hands.", color:"#9333ea", emoji:"🐄", desc:"The Caretaker has a natural ease around animals. They read livestock body language, notice subtle health changes, and show up every morning without being told. Routine is not a burden to them — it's how they show they care.", goodAt:["Daily livestock routines","Animal health observation","Feeding programs","Calving, lambing, farrowing"], bestFit:"Dairy, sheep, beef cattle, pigs, poultry — any livestock-intensive operation", frustrated:"Chaotic schedules, poor animal welfare standards, being rotated off animal work", struggles:"Heavy machinery, analytical planning, fast physical labor", wrongRole:"Disheartened; animals suffer when this person isn't in the right role", manage:"Keep them on their animals. Consistency and routine matter to them. Ask what they're seeing — they'll tell you before problems get serious." },
+  Scout:     { tagline:"Sees what others miss.", color:"#0891b2", emoji:"👁️", desc:"The Scout walks a paddock and picks up things no one else notices — a fence post working loose, early signs of disease in a mob, a waterway that's going to cause problems. They're quiet observers who pay attention.", goodAt:["Crop scouting and pest monitoring","Flock/herd observation","Water and infrastructure inspection","Early problem detection"], bestFit:"Large properties, precision agriculture, integrated pest management programs", frustrated:"Being stuck indoors, ignored when they raise issues, noisy chaotic workplaces", struggles:"Taking decisive action under pressure, managing others, fast output work", wrongRole:"Problems go undetected; they become withdrawn and disengaged", manage:"Listen to them when they raise concerns — they're rarely wrong. Give them space to roam and observe. Don't bury them in tasks that keep them stationary." },
+  Organiser: { tagline:"Runs a tight ship.", color:"#ea580c", emoji:"📋", desc:"The Organiser keeps the whole operation humming. They think about what's coming next, who needs to be where, and whether there's enough fuel, seed, or feed to get through the week. Without them, things fall through the cracks.", goodAt:["Scheduling and logistics","Inventory and supply management","Running work crews","Record-keeping"], bestFit:"Complex mixed operations, large cropping programs, feedlots with multiple staff", frustrated:"Last-minute chaos, disorganised coworkers, tasks with no clear process", struggles:"Hands-on physical output, adapting when plans fall apart, animal intuition", wrongRole:"Stressed and frustrated; operation loses efficiency", manage:"Put them in charge of scheduling and logistics. Give them the authority to make systems stick. Ask them to plan — they'll do it better than most." },
+  Resourcer: { tagline:"Finds a way. Always.", color:"#d97706", emoji:"⚙️", desc:"The Resourcer is a born problem-solver. When the part isn't in stock, the weather doesn't cooperate, or the plan falls apart, they improvise. They're creative under pressure and always thinking about alternatives.", goodAt:["On-the-spot problem solving","Improvised repairs","Adapting to changing conditions","Working with limited resources"], bestFit:"Remote properties, mixed enterprises, operations with older equipment or tight budgets", frustrated:"Rigid systems, being told 'that's not how we do it', no room to try new approaches", struggles:"Strict routine, detailed record-keeping, high-precision tasks", wrongRole:"Bored and restless; may create unnecessary change just to feel challenged", manage:"Give them problems to solve. Let them try new approaches. Don't chain them to a rigid process. They'll surprise you." },
+  Drover:    { tagline:"Leads from the front.", color:"#be123c", emoji:"🤠", desc:"The Drover is a natural leader of people and livestock alike. They communicate clearly, know how to read a situation, and can bring a work crew together without making a big deal of it. On the land or in the yards, people follow them.", goodAt:["Leading work crews","Livestock handling and movement","Making decisions under pressure","Training new workers"], bestFit:"Large livestock operations, mustering, cropping operations with casual labour teams", frustrated:"Working alone for long periods, no authority to make decisions, disrespectful teams", struggles:"Fine detail work, sitting still, analytical tasks", wrongRole:"Underutilised; may dominate situations they shouldn't or leave for somewhere they can lead", manage:"Give them a team and clear direction. They need authority to go with the responsibility. Use them to bring on new workers and set the culture in the yards." }
+};
+
+const QUESTIONS = [
+  { q:"I'd rather be out doing something than sitting and planning it.", traits:["Action"], dir:1 },
+  { q:"I notice when an animal isn't quite right before anyone else mentions it.", traits:["Observation"], dir:1 },
+  { q:"I enjoy figuring out why a machine isn't working.", traits:["Mechanical"], dir:1 },
+  { q:"I like knowing exactly what I'm doing each day — surprises frustrate me.", traits:["Routine"], dir:1 },
+  { q:"I find it easy to stay calm when things go wrong and just work through it.", traits:["Adaptability"], dir:1 },
+  { q:"I'd rather work with animals than operate machinery.", traits:["LivestockAffinity"], dir:1 },
+  { q:"I feel best when I can see a clear result of my work at the end of the day.", traits:["Action"], dir:1 },
+  { q:"I think about soil health and long-term land condition when I'm working.", traits:["LongTermThinking"], dir:1 },
+  { q:"I'm good at keeping track of supplies, schedules, and what needs doing next.", traits:["Organisation"], dir:1 },
+  { q:"When equipment breaks down, I'd rather fix it myself than wait for someone else.", traits:["Mechanical"], dir:1 },
+  { q:"I tend to spot problems — pests, leaks, sick animals — before they become serious.", traits:["Observation"], dir:1 },
+  { q:"I enjoy leading a team and making sure everyone knows what they're doing.", traits:["Leadership"], dir:1 },
+  { q:"I work best when I can set my own pace and am not rushed.", traits:["Routine"], dir:1 },
+  { q:"I get satisfaction from completing the same important task well, day after day.", traits:["Routine"], dir:1 },
+  { q:"I like finding creative ways to solve problems when the usual approach won't work.", traits:["Adaptability"], dir:1 },
+  { q:"I feel more comfortable working alone than managing other people.", traits:["Leadership"], dir:-1 },
+  { q:"I'd rather take action quickly than wait until I have all the information.", traits:["Action"], dir:1 },
+  { q:"I think about how the decisions we make now will affect the farm in 5 years.", traits:["LongTermThinking"], dir:1 },
+  { q:"I can read a mob of cattle or sheep and know when something's off.", traits:["LivestockAffinity"], dir:1 },
+  { q:"I enjoy the planning side of farming — what goes where, when, and how much.", traits:["Organisation"], dir:1 },
+  { q:"I don't mind doing repetitive work as long as it matters.", traits:["Routine"], dir:1 },
+  { q:"I can improvise with what's on hand when the right tools or parts aren't available.", traits:["Adaptability"], dir:1 },
+  { q:"I like walking paddocks or checking fences — I notice things when I'm moving slowly.", traits:["Observation"], dir:1 },
+  { q:"I'd choose working with machinery over working with livestock.", traits:["Mechanical"], dir:1 },
+  { q:"When I'm managing others, I can get the best out of different kinds of people.", traits:["Leadership"], dir:1 },
+  { q:"I tend to push hard to get a job finished, even if it means a long day.", traits:["Action"], dir:1 },
+  { q:"I believe in doing things right for the land, even if it costs more time or money.", traits:["LongTermThinking"], dir:1 },
+  { q:"I keep good records and make sure nothing important gets forgotten.", traits:["Organisation"], dir:1 }
+];
+
+const ARCHETYPE_WEIGHTS = {
+  Hunter:    {Action:5,Observation:1,Mechanical:1,Routine:-2,Adaptability:2,LivestockAffinity:1,LongTermThinking:0,Organisation:0,Leadership:2},
+  Steward:   {Action:0,Observation:3,Mechanical:0,Routine:2,Adaptability:2,LivestockAffinity:3,LongTermThinking:5,Organisation:2,Leadership:0},
+  Mechanic:  {Action:2,Observation:2,Mechanical:5,Routine:2,Adaptability:2,LivestockAffinity:-1,LongTermThinking:1,Organisation:1,Leadership:0},
+  Caretaker: {Action:0,Observation:3,Mechanical:-1,Routine:4,Adaptability:1,LivestockAffinity:5,LongTermThinking:2,Organisation:1,Leadership:1},
+  Scout:     {Action:-1,Observation:5,Mechanical:1,Routine:2,Adaptability:2,LivestockAffinity:2,LongTermThinking:3,Organisation:1,Leadership:0},
+  Organiser: {Action:1,Observation:2,Mechanical:1,Routine:3,Adaptability:1,LivestockAffinity:0,LongTermThinking:2,Organisation:5,Leadership:3},
+  Resourcer: {Action:3,Observation:2,Mechanical:3,Routine:-2,Adaptability:5,LivestockAffinity:0,LongTermThinking:1,Organisation:0,Leadership:1},
+  Drover:    {Action:3,Observation:2,Mechanical:0,Routine:1,Adaptability:3,LivestockAffinity:3,LongTermThinking:1,Organisation:2,Leadership:5}
+};
+
+const SCORE_LABELS = {Action:"Drive & Output",Observation:"Observation",Mechanical:"Equipment / Mechanics",Routine:"Reliability / Routine",Adaptability:"Problem Solving",LivestockAffinity:"Animal Care",LongTermThinking:"Strategic Thinking",Organisation:"Planning & Logistics",Leadership:"Team Leadership"};
+
+let userName="", currentQ=0, answers={};
+
+function showPage(id) {
+  ["home","name","quiz","result"].forEach(p => {
+    document.getElementById("page-"+p).classList.toggle("hidden", p!==id);
+  });
+}
+
+function onNameInput() {
+  const v = document.getElementById("name-input").value.trim();
+  document.getElementById("btn-name-next").classList.toggle("active", v.length>0);
+}
+
+function tryNext() {
+  const v = document.getElementById("name-input").value.trim();
+  if (!v) return;
+  userName=v; currentQ=0; answers={};
+  renderQuestion(); showPage("quiz");
+}
+
+function renderQuestion() {
+  const total=QUESTIONS.length, q=QUESTIONS[currentQ];
+  document.getElementById("q-counter").textContent=`Question ${currentQ+1} of ${total}`;
+  const pct=Math.round((currentQ/total)*100);
+  document.getElementById("q-pct").textContent=`${pct}% done`;
+  document.getElementById("progress-fill").style.width=`${pct}%`;
+  document.getElementById("q-text").textContent=`"${q.q}"`;
+  const labels=["Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"];
+  const c=document.getElementById("options-container"); c.innerHTML="";
+  labels.forEach((lbl,i)=>{
+    const b=document.createElement("button");
+    b.className="opt-btn";
+    b.innerHTML=`<span class="opt-num">${i+1}</span>${lbl}`;
+    b.onclick=()=>handleAnswer(i+1);
+    c.appendChild(b);
+  });
+}
+
+function handleAnswer(val) {
+  answers[currentQ]=val;
+  if(currentQ<QUESTIONS.length-1){currentQ++;renderQuestion();}
+  else calcResult();
+}
+
+function goBack() {
+  if(currentQ>0){currentQ--;renderQuestion();}else showPage("name");
+}
+
+function calcResult() {
+  const keys=["Action","Observation","Mechanical","Routine","Adaptability","LivestockAffinity","LongTermThinking","Organisation","Leadership"];
+  const raw={}, cnt={};
+  keys.forEach(t=>{raw[t]=0;cnt[t]=0;});
+  QUESTIONS.forEach((q,i)=>{
+    const v=answers[i]||3;
+    q.traits.forEach(t=>{raw[t]+=v*q.dir;cnt[t]++;});
+  });
+  const scores={};
+  keys.forEach(t=>{
+    const mx=cnt[t]*5, mn=cnt[t]*1;
+    scores[t]=Math.round(((raw[t]-mn)/(mx-mn))*10);
+  });
+  const archScores={};
+  Object.entries(ARCHETYPE_WEIGHTS).forEach(([a,w])=>{
+    let s=0; Object.entries(w).forEach(([t,v])=>s+=(scores[t]||5)*v);
+    archScores[a]=s;
+  });
+  const sorted=Object.entries(archScores).sort((a,b)=>b[1]-a[1]);
+  renderResult(scores,sorted[0][0],sorted[1][0]);
+  showPage("result");
+}
+
+function levelLabel(v){
+  if(v<=3)return{label:"Low",color:"#9ca3af"};
+  if(v<=6)return{label:"Moderate",color:"#fbbf24"};
+  return{label:"High",color:"#4ade80"};
+}
+
+function renderResult(scores,primary,secondary){
+  const pa=ARCHETYPES[primary], sa=ARCHETYPES[secondary];
+  const hdr=document.getElementById("result-header");
+  hdr.style.background=`linear-gradient(135deg,${pa.color}33,#1c1917)`;
+  hdr.style.border=`2px solid ${pa.color}`;
+  document.getElementById("r-emoji").textContent=pa.emoji;
+  document.getElementById("r-name").textContent=userName;
+  document.getElementById("r-badge").style.background=pa.color;
+  document.getElementById("r-primary-name").textContent=`The ${primary}`;
+  document.getElementById("r-tagline").textContent=pa.tagline;
+  document.getElementById("r-secondary-name").textContent=`The ${secondary} ${sa.emoji}`;
+  const sc=document.getElementById("scores-container"); sc.innerHTML="";
+  Object.entries(SCORE_LABELS).forEach(([t,label])=>{
+    const v=Math.max(0,Math.min(10,scores[t]??5)), lvl=levelLabel(v);
+    sc.innerHTML+=`<div class="score-row"><div class="score-label-row"><span class="lbl">${label}</span><span class="val" style="color:${lvl.color}">${lvl.label} (${v}/10)</span></div><div class="bar-bg"><div class="bar-fill" style="width:${v*10}%;background:#d97706"></div></div></div>`;
+  });
+  document.getElementById("r-desc").textContent=pa.desc;
+  document.getElementById("r-goodat").innerHTML=pa.goodAt.map(g=>`<li>${g}</li>`).join("");
+  document.getElementById("r-bestfit").textContent=pa.bestFit;
+  document.getElementById("r-frustrated").textContent=pa.frustrated;
+  document.getElementById("r-struggles").textContent=pa.struggles;
+  document.getElementById("r-wrongrole").textContent=pa.wrongRole;
+  document.getElementById("r-manage").textContent=pa.manage;
+  document.getElementById("r-sec-title").textContent=`Secondary Instinct: The ${secondary} ${sa.emoji}`;
+  document.getElementById("r-sec-desc").textContent=`${sa.tagline} — ${sa.desc.split('.')[0]}. This secondary instinct means ${userName} also brings ${sa.goodAt[0].toLowerCase()} and ${sa.goodAt[1].toLowerCase()} to the operation.`;
+}
+
+function restart(){
+  document.getElementById("name-input").value="";
+  document.getElementById("btn-name-next").classList.remove("active");
+  showPage("home");
+}
+</script>
+</body>
+</html>
