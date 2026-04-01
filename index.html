@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Farm Instincts</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#1c1917;color:#e7e5e4;min-height:100vh}
+button,input,textarea{font-family:Georgia,serif}
+.hidden{display:none!important}
+
+#page-home{min-height:100vh;background:linear-gradient(160deg,#78350f 0%,#1c1917 60%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.home-logo{font-size:64px;margin-bottom:16px}
+.home-h1{color:#fef3c7;font-size:30px;margin-bottom:4px}
+.home-h2{color:#d97706;font-size:13px;font-weight:normal;letter-spacing:2px;text-transform:uppercase;margin-bottom:22px}
+.home-desc{color:#d6d3d1;font-size:15px;max-width:420px;line-height:1.85;margin-bottom:28px}
+.lang-toggle{display:flex;margin-bottom:28px;border:2px solid #44403c;border-radius:30px;overflow:hidden}
+.lang-btn{background:transparent;border:none;padding:8px 22px;font-size:14px;font-weight:bold;cursor:pointer;color:#78716c;letter-spacing:1px;transition:all .2s}
+.lang-btn.active{background:#d97706;color:#fff}
+.btn-primary{background:#d97706;color:#fff;border:none;border-radius:10px;padding:15px 40px;font-size:18px;font-weight:bold;cursor:pointer;letter-spacing:1px}
+.btn-primary:hover{background:#b45309}
+
+#page-name{min-height:100vh;background:#1c1917;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.page-icon{font-size:48px;margin-bottom:16px}
+.page-title{color:#fef3c7;font-size:24px;margin-bottom:8px}
+.page-sub{color:#a8a29e;font-size:15px;margin-bottom:24px}
+#name-input{background:#292524;border:2px solid #57534e;border-radius:8px;padding:12px 20px;font-size:17px;color:#fef3c7;width:280px;outline:none;margin-bottom:20px;text-align:center;display:block}
+#name-input:focus{border-color:#d97706}
+.btn-next{background:#57534e;color:#fff;border:none;border-radius:8px;padding:14px 36px;font-size:16px;font-weight:bold;cursor:default}
+.btn-next.active{background:#d97706;cursor:pointer}
+
+#page-quiz{min-height:100vh;background:#1c1917;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.quiz-wrap{width:100%;max-width:560px}
+.quiz-meta{display:flex;justify-content:space-between;margin-bottom:8px}
+.quiz-meta span{color:#a8a29e;font-size:13px}
+.quiz-pct{color:#d97706!important;font-weight:bold}
+.prog-bar{background:#292524;border-radius:4px;height:6px;margin-bottom:32px;overflow:hidden}
+.prog-fill{background:#d97706;height:100%;border-radius:4px;transition:width .3s}
+.q-card{background:#292524;border-radius:16px;padding:32px 28px;margin-bottom:28px}
+.q-card p{color:#fef3c7;font-size:19px;line-height:1.6;font-style:italic}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt-btn{background:rgba(255,255,255,.05);border:2px solid #44403c;border-radius:10px;padding:13px 18px;color:#e7e5e4;font-size:15px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;transition:all .15s}
+.opt-btn:hover{background:rgba(217,119,6,.2);border-color:#d97706}
+.opt-num{background:#44403c;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#d97706;font-weight:bold;flex-shrink:0}
+.btn-back{margin-top:20px;background:transparent;border:none;color:#78716c;font-size:14px;cursor:pointer}
+.btn-back:hover{color:#a8a29e}
+
+#page-cally{min-height:100vh;background:#1c1917;padding:24px 16px}
+.cally-wrap{max-width:660px;margin:0 auto}
+.cally-top{text-align:center;margin-bottom:28px}
+.cally-top h2{color:#fef3c7;font-size:22px;margin-bottom:6px}
+.cally-top p{color:#a8a29e;font-size:14px;line-height:1.6}
+.c-section{background:#292524;border-radius:14px;padding:20px;margin-bottom:16px}
+.c-section h3{color:#d97706;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.c-sec-score{color:#78716c;font-size:12px;margin-bottom:14px}
+.c-item{margin-bottom:16px}
+.c-item label{display:block;color:#d6d3d1;font-size:14px;line-height:1.5;margin-bottom:8px}
+.rating-row{display:flex;gap:6px;flex-wrap:wrap}
+.rating-btn{background:#44403c;border:none;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:11px;color:#a8a29e;font-weight:bold;transition:all .15s;white-space:nowrap;flex:1;min-width:0;text-align:center}
+.rating-btn:hover{background:#d97706;color:#fff}
+.rating-btn.sel{background:#d97706;color:#fff}
+.btn-cally-submit{width:100%;background:#d97706;border:none;border-radius:10px;padding:16px;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;margin-top:8px;margin-bottom:40px}
+.btn-cally-submit:hover{background:#b45309}
+
+/* ── PREMIUM RESULT ── */
+#page-result{min-height:100vh;background:#111;padding:0}
+.result-wrap{max-width:720px;margin:0 auto;padding:0 0 60px}
+
+.reveal-hero{background:linear-gradient(180deg,#1a0f00 0%,#111 100%);padding:60px 24px 48px;text-align:center;position:relative;overflow:hidden}
+.reveal-hero::before{content:"";position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(217,119,6,.15) 0%,transparent 70%);pointer-events:none}
+.reveal-badge{display:inline-block;background:rgba(217,119,6,.12);border:1px solid rgba(217,119,6,.3);border-radius:30px;padding:6px 18px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#d97706;margin-bottom:20px}
+.reveal-emoji{font-size:72px;margin-bottom:16px;display:block}
+.reveal-name{color:#78716c;font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.reveal-archetype{color:#fef3c7;font-size:38px;font-weight:bold;margin-bottom:8px;line-height:1.1}
+.reveal-tagline{color:#d97706;font-size:17px;font-style:italic;margin-bottom:20px}
+.reveal-desc{color:#d6d3d1;font-size:15px;line-height:1.9;max-width:520px;margin:0 auto 24px}
+.reveal-secondary{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;display:inline-block;padding:10px 20px;font-size:13px;color:#78716c}
+.reveal-secondary strong{color:#a8a29e}
+
+.section-divider{display:flex;align-items:center;gap:12px;padding:32px 24px 16px}
+.section-divider span{color:#d97706;font-size:11px;letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
+.section-divider::before,.section-divider::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.08)}
+
+.insight-card{margin:0 24px 16px;background:#1a1a1a;border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden}
+.insight-card-header{padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.insight-card-header h3{color:#fef3c7;font-size:15px;font-weight:bold;margin-bottom:4px}
+.insight-card-header p{color:#78716c;font-size:13px;line-height:1.5}
+.insight-card-body{padding:16px 20px}
+
+.strength-bar-row{margin-bottom:16px}
+.strength-bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.strength-bar-label{color:#e7e5e4;font-size:14px}
+.strength-bar-score{font-size:12px;font-weight:bold;padding:2px 8px;border-radius:10px}
+.score-high{background:rgba(34,197,94,.12);color:#4ade80}
+.score-mid{background:rgba(251,191,36,.12);color:#fbbf24}
+.score-low{background:rgba(156,163,175,.12);color:#9ca3af}
+.strength-track{background:#2a2a2a;border-radius:4px;height:8px;overflow:hidden}
+.strength-fill{height:100%;border-radius:4px;transition:width .8s ease}
+
+.insight-row{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.insight-dot{width:6px;height:6px;border-radius:50%;background:#d97706;flex-shrink:0;margin-top:7px}
+.insight-text{color:#c4bfb8;font-size:14px;line-height:1.7}
+.insight-text strong{color:#fef3c7}
+
+.trait-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.trait-box{background:#222;border-radius:10px;padding:14px}
+.trait-box.strong{border-left:3px solid #d97706}
+.trait-box.weak{border-left:3px solid #44403c}
+.trait-box-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.trait-box.strong .trait-box-label{color:#d97706}
+.trait-box.weak .trait-box-label{color:#57534e}
+.trait-box p{font-size:13px;color:#a8a29e;line-height:1.6}
+
+.good-at-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.good-at-item{background:#222;border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.good-at-icon{color:#d97706;font-size:14px;flex-shrink:0;margin-top:1px}
+.good-at-text{color:#c4bfb8;font-size:13px;line-height:1.5}
+
+.watchout-item{background:rgba(153,27,27,.08);border:1px solid rgba(153,27,27,.2);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.watchout-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#f87171;margin-bottom:4px}
+.watchout-text{font-size:14px;color:#c4bfb8;line-height:1.6}
+
+.manage-box{background:rgba(30,58,95,.15);border:1px solid rgba(29,78,216,.25);border-radius:12px;padding:18px 20px}
+.manage-box p{color:#c4bfb8;font-size:14px;line-height:1.8}
+
+.cally-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cally-metric{background:#1a1a1a;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px}
+.cally-metric-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#78716c;margin-bottom:8px}
+.cally-metric-bar-bg{background:#2a2a2a;border-radius:4px;height:6px;margin-bottom:6px;overflow:hidden}
+.cally-metric-bar-fill{height:100%;border-radius:4px}
+.cally-metric-score{font-size:13px;color:#a8a29e}
+.cally-metric-score strong{color:#fef3c7}
+
+.placement-row{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0}
+.placement-pill{background:rgba(217,119,6,.1);border:1px solid rgba(217,119,6,.25);border-radius:20px;padding:7px 14px;font-size:13px;color:#fef3c7}
+
+.export-strip{margin:32px 24px 0;background:linear-gradient(135deg,rgba(217,119,6,.08),rgba(217,119,6,.02));border:1px solid rgba(217,119,6,.2);border-radius:16px;padding:24px;text-align:center}
+.export-strip h3{color:#fef3c7;font-size:17px;margin-bottom:6px}
+.export-strip p{color:#78716c;font-size:13px;margin-bottom:18px;line-height:1.6}
+.export-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-export{background:#d97706;color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px}
+.btn-export:hover{background:#b45309}
+.btn-export-outline{background:transparent;color:#d97706;border:2px solid #d97706;border-radius:10px;padding:11px 24px;font-size:14px;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:8px}
+.btn-export-outline:hover{background:rgba(217,119,6,.1)}
+
+.btn-restart{width:calc(100% - 48px);margin:16px 24px 0;background:#1a1a1a;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:16px;color:#78716c;font-size:14px;cursor:pointer}
+.btn-restart:hover{color:#a8a29e;border-color:rgba(255,255,255,.2)}
+
+@media(max-width:500px){
+  .trait-compare,.good-at-grid,.cally-result-grid{grid-template-columns:1fr}
+  .export-btns{flex-direction:column}
+  .btn-export,.btn-export-outline{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div id="page-home">
+  <div class="home-logo">🌾</div>
+  <div class="home-h1">Farm Instincts</div>
+  <div class="home-h2">Strengths Assessment</div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
+  </div>
+  <p class="home-desc" id="home-desc"></p>
+  <button class="btn-primary" id="btn-start"></button>
+</div>
+
+<div id="page-name" class="hidden">
+  <div class="page-icon">👤</div>
+  <div class="page-title" id="name-title"></div>
+  <div class="page-sub" id="name-sub"></div>
+  <input id="name-input" type="text" oninput="onNameInput()" onkeydown="if(event.key==='Enter')tryName()"/>
+  <button class="btn-next" id="btn-name-next" onclick="tryName()"></button>
+</div>
+
+<div id="page-quiz" class="hidden">
+  <div class="quiz-wrap">
+    <div class="quiz-meta"><span id="q-counter"></span><span class="quiz-pct" id="q-pct"></span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="q-card"><p id="q-text"></p></div>
+    <div class="opts" id="opts"></div>
+    <button class="btn-back" id="btn-back" onclick="quizBack()"></button>
+  </div>
+</div>
+
+<div id="page-cally" class="hidden">
+  <div class="cally-wrap">
+    <div class="cally-top">
+      <div class="page-icon">🏡</div>
+      <h2 id="cally-title"></h2>
+      <p id="cally-sub"></p>
+    </div>
+    <div id="cally-body"></div>
+    <button class="btn-cally-submit" id="btn-cally-submit" onclick="submitCally()"></button>
+  </div>
+</div>
+
+<div id="page-result" class="hidden">
+  <div class="result-wrap" id="result-wrap"></div>
+</div>
+
+<script>
+const T={
+  en:{
+    homeDesc:"Every farmer is built different. Some hear what the land needs. Some know when a machine is about to fail. Some keep a herd calm without trying.\n\nDiscover what you're naturally wired for.\n\nTake the assessment and uncover your Farm Instincts — in 15 minutes or less.",
+    startBtn:"Start Assessment →",
+    nameTitle:"Who's taking this?",nameSub:"Enter your name to personalise your report.",namePH:"Your name...",nameBtn:"Let's Go →",
+    qOf:(c,t)=>`Question ${c} of ${t}`,pct:p=>`${p}% done`,back:"← Back",
+    aLabels:["Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"],
+    callyTitle:"Cally Farms Skills Evaluation",callySub:"For each statement, select how likely it describes you.",
+    callySubmit:"Complete & View My Report →",
+    ratingLabels:["Very Unlikely","Unlikely","Neutral","Likely","Very Likely"],
+    restart:"↩ Start Over",
+    exportTitle:"Your Report Is Ready",
+    exportSub:"Share your Farm Instincts report with your team, save it for your records, or print it out.",
+    exportPDF:"Download PDF Report",exportPrint:"Print Report",
+    callyResultTitle:"Cally Farms Skills Profile",
+    callyPlacement:"Recommended Roles",
+    sTitles:{Action:"Drive & Output",Observation:"Observation",Mechanical:"Equipment / Mechanics",Routine:"Reliability / Routine",Adaptability:"Problem Solving",LivestockAffinity:"Animal Care",LongTermThinking:"Strategic Thinking",Organisation:"Planning & Logistics",Leadership:"Team Leadership"},
+    levels:[{max:3,l:"Low"},{max:6,l:"Moderate"},{max:10,l:"High"}],
+    sections:[
+      {key:"tree",title:"Tree Farm Work",max:40,items:["I mow carefully around young trees without damaging them","I control weeds and vegetation around trees effectively","I prune trees properly for healthy growth and form","I coppice trees correctly and at the right stage","I can recognize tree stress, pest damage, or poor growth","I follow seasonal tree maintenance schedules","I work efficiently in rows and field conditions","I pay close attention to detail around high-value trees"]},
+      {key:"garden",title:"Garden Production",max:45,items:["I plant and transplant vegetables with care","I can identify common crops and their growth stages","I weed garden rows and beds thoroughly","I harvest produce carefully and at the right stage","I support irrigation, watering, and moisture management","I can recognize pests, disease, and nutrient issues","I handle delicate crops without causing damage","I work consistently during fast-paced harvest periods","I understand crop spacing, cleanliness, and order"]},
+      {key:"animal",title:"Animal Care",max:40,items:["I feed and water chickens consistently every day","I collect eggs carefully and maintain cleanliness","I monitor bird health and notice problems early","I handle meat birds or layers calmly and correctly","I care well for animals like donkeys, ponies, and miniature cows","I watch for fencing or shelter issues that affect animals","I keep pens, coops, and animal areas clean","I follow care routines without skipping steps"]},
+      {key:"fence",title:"Fence & Property",max:30,items:["I can inspect fence lines and identify weak spots","I repair wire, boards, posts, or gates effectively","I use hand and power tools safely for repairs","I keep property edges, paths, and work areas maintained","I notice hazards before they become bigger problems","I complete outdoor maintenance tasks without constant direction"]},
+      {key:"equip_op",title:"Equipment Operation",max:40,items:["I operate zero-turn or riding mowers safely","I use weed eaters effectively and safely","I operate tractors confidently and responsibly","I hook up and use implements correctly","I can back trailers or maneuver equipment in tight spaces","I perform pre-use checks before operating machinery","I take care not to damage crops, trees, fences, or equipment","I work efficiently with machinery in farm conditions"]},
+      {key:"equip_maint",title:"Equipment Maintenance",max:40,items:["I perform routine maintenance — oil, grease, belts, blades, filters","I can diagnose small engine problems","I troubleshoot tractor or implement issues effectively","I replace parts correctly","I keep maintenance organized and documented","I prevent breakdowns through regular upkeep","I use mechanical tools properly","I take initiative to fix problems in-house when appropriate"]},
+      {key:"building",title:"Building & Construction",max:40,items:["I have solid general carpentry skills","I can repair sheds, coops, barns, or outbuildings","I measure, cut, and assemble materials correctly","I can handle roofing, siding, flooring, or structural repairs","I use construction tools safely","I complete repair work neatly and durably","I notice building issues before they worsen","I can work independently on repair projects"]},
+      {key:"reliability",title:"Work Style & Reliability",max:40,items:["I show up on time consistently","I work steadily without constant supervision","I finish what I start","I take pride in doing good work","I handle dirty, hot, repetitive, or difficult jobs well","I maintain a positive attitude on the job","I can switch between tasks as farm priorities change","I follow through even during busy seasons"]},
+      {key:"leadership",title:"Leadership & Team Fit",max:40,items:["I communicate clearly with others","I work well as part of a team","I accept correction and feedback well","I help others when they need it","I can lead a small crew or task effectively","I make good decisions without waiting for instructions","I represent the farm well to others","I can be trusted with responsibility"]},
+      {key:"safety",title:"Safety & Problem Solving",max:40,items:["I use tools and machinery safely at all times","I pay attention to my surroundings while working","I recognize hazards before accidents happen","I solve problems calmly without panic","I adapt when equipment or conditions change","I use sound judgment on the job","I ask good questions when I'm unsure","I balance speed with safety and quality"]}
+    ],
+    placements:[
+      {keys:["tree","equip_op"],label:"🌳 Tree & Field Specialist"},
+      {keys:["garden","reliability"],label:"🥬 Garden & Harvest Specialist"},
+      {keys:["animal","reliability"],label:"🐔 Animal Care Specialist"},
+      {keys:["equip_op","safety"],label:"🚜 Equipment Operator"},
+      {keys:["equip_maint","safety"],label:"🔧 Mechanic / Maintenance Specialist"},
+      {keys:["fence","building"],label:"🏗️ Fence & Property Specialist"},
+      {keys:["building","fence"],label:"🔨 Construction & Building Specialist"},
+      {keys:["leadership","reliability"],label:"👷 Crew Lead / Farm Lead Potential"}
+    ]
+  },
+  es:{
+    homeDesc:"Cada agricultor está hecho diferente. Algunos escuchan lo que la tierra necesita. Algunos saben cuándo una máquina está a punto de fallar.\n\nDescubre para qué estás naturalmente preparado.\n\nToma la evaluación y descubre tus Instintos de Campo — en 15 minutos o menos.",
+    startBtn:"Comenzar Evaluación →",
+    nameTitle:"¿Quién está tomando esto?",nameSub:"Ingresa tu nombre para personalizar tu informe.",namePH:"Tu nombre...",nameBtn:"¡Vamos! →",
+    qOf:(c,t)=>`Pregunta ${c} de ${t}`,pct:p=>`${p}% completado`,back:"← Atrás",
+    aLabels:["Muy en desacuerdo","En desacuerdo","Neutral","De acuerdo","Muy de acuerdo"],
+    callyTitle:"Evaluación de Habilidades Cally Farms",callySub:"Para cada afirmación, selecciona qué tan probable es que te describa.",
+    callySubmit:"Completar y Ver Mi Informe →",
+    ratingLabels:["Muy Improbable","Improbable","Neutral","Probable","Muy Probable"],
+    restart:"↩ Comenzar de Nuevo",
+    exportTitle:"Tu Informe Está Listo",
+    exportSub:"Comparte tu informe con tu equipo, guárdalo o imprímelo.",
+    exportPDF:"Descargar Informe PDF",exportPrint:"Imprimir Informe",
+    callyResultTitle:"Perfil de Habilidades Cally Farms",
+    callyPlacement:"Roles Recomendados",
+    sTitles:{Action:"Impulso y Rendimiento",Observation:"Observación",Mechanical:"Equipos / Mecánica",Routine:"Fiabilidad / Rutina",Adaptability:"Resolución de Problemas",LivestockAffinity:"Cuidado Animal",LongTermThinking:"Pensamiento Estratégico",Organisation:"Planificación y Logística",Leadership:"Liderazgo de Equipo"},
+    levels:[{max:3,l:"Bajo"},{max:6,l:"Moderado"},{max:10,l:"Alto"}],
+    sections:[
+      {key:"tree",title:"Trabajo en Árbol",max:40,items:["Corto el césped alrededor de árboles jóvenes sin dañarlos","Controlo las malezas alrededor de los árboles eficazmente","Podo correctamente para un crecimiento saludable","Realizo el coppicing correcto en el momento adecuado","Reconozco el estrés del árbol, daño de plagas o crecimiento deficiente","Sigo los calendarios de mantenimiento estacional","Trabajo eficientemente en hileras y condiciones de campo","Presto atención al detalle alrededor de árboles de alto valor"]},
+      {key:"garden",title:"Producción de Jardín",max:45,items:["Planto y transplanto vegetales con cuidado","Identifico cultivos comunes y sus etapas de crecimiento","Deshierbo hileras y camas de jardín completamente","Cosecho con cuidado en el momento correcto","Apoyo el riego y la gestión de humedad","Reconozco plagas, enfermedades y problemas nutricionales","Manejo cultivos delicados sin causarles daño","Trabajo consistentemente durante períodos de cosecha intensa","Entiendo el espaciado de cultivos, la limpieza y el orden"]},
+      {key:"animal",title:"Cuidado Animal",max:40,items:["Alimento y doy agua a las gallinas consistentemente cada día","Recojo los huevos con cuidado y mantengo la limpieza","Monitoreo la salud de las aves y noto problemas temprano","Manejo aves de carne o ponedoras con calma y correctamente","Cuido bien a animales como burros, ponis y vacas miniatura","Vigilo problemas de cercas o refugios que afecten a los animales","Mantengo corrales, gallineros y áreas animales limpias","Sigo las rutinas de cuidado sin saltarme pasos"]},
+      {key:"fence",title:"Cercas y Propiedad",max:30,items:["Inspecciono líneas de cerca e identifico puntos débiles","Reparo alambres, tablas, postes o puertas eficazmente","Uso herramientas manuales y eléctricas con seguridad","Mantengo bordes, caminos y áreas de trabajo en orden","Noto peligros antes de que se conviertan en problemas mayores","Completo tareas de mantenimiento exterior sin dirección constante"]},
+      {key:"equip_op",title:"Operación de Equipos",max:40,items:["Opero cortadoras de giro cero o montables con seguridad","Uso desbrozadoras eficazmente y con seguridad","Opero tractores con confianza y responsabilidad","Conecto y uso implementos correctamente","Puedo dar marcha atrás con remolques en espacios reducidos","Realizo verificaciones previas antes de operar la maquinaria","Cuido de no dañar cultivos, árboles, cercas o equipo","Trabajo eficientemente con maquinaria en condiciones de granja"]},
+      {key:"equip_maint",title:"Mantenimiento de Equipos",max:40,items:["Realizo mantenimiento rutinario: aceite, grasa, correas, cuchillas, filtros","Puedo diagnosticar problemas de motores pequeños","Soluciono problemas de tractores o implementos eficazmente","Reemplazo piezas correctamente","Mantengo el mantenimiento organizado y documentado","Prevengo averías mediante mantenimiento regular","Uso herramientas mecánicas correctamente","Tomo iniciativa para reparar problemas internamente cuando es apropiado"]},
+      {key:"building",title:"Edificios y Construcción",max:40,items:["Tengo sólidas habilidades generales de carpintería","Puedo reparar cobertizos, gallineros, graneros o edificios","Mido, corto y ensamblo materiales correctamente","Puedo realizar reparaciones de techos, revestimientos, pisos o estructuras","Uso herramientas de construcción con seguridad","Completo reparaciones de manera ordenada y duradera","Noto problemas de edificios antes de que empeoren","Puedo trabajar independientemente en proyectos de reparación"]},
+      {key:"reliability",title:"Estilo de Trabajo y Confiabilidad",max:40,items:["Llego a tiempo consistentemente","Trabajo constantemente sin supervisión constante","Termino lo que empiezo","Me enorgullezco de hacer un buen trabajo","Manejo trabajos difíciles, calurosos o repetitivos bien","Mantengo una actitud positiva en el trabajo","Puedo cambiar entre tareas según las prioridades de la granja","Cumplo incluso durante las temporadas de mayor actividad"]},
+      {key:"leadership",title:"Liderazgo y Equipo",max:40,items:["Me comunico claramente con los demás","Trabajo bien como parte de un equipo","Acepto correcciones y comentarios bien","Ayudo a otros cuando lo necesitan","Puedo liderar una pequeña cuadrilla o tarea eficazmente","Tomo buenas decisiones sin esperar instrucciones","Represento bien a la granja ante otros","Se me puede confiar responsabilidad"]},
+      {key:"safety",title:"Seguridad y Resolución de Problemas",max:40,items:["Uso herramientas y maquinaria con seguridad en todo momento","Presto atención a mi entorno mientras trabajo","Reconozco peligros antes de que ocurran accidentes","Resuelvo problemas con calma y sin pánico","Me adapto cuando el equipo o las condiciones cambian","Uso buen juicio en el trabajo","Hago buenas preguntas cuando no estoy seguro","Equilibro velocidad con seguridad y calidad"]}
+    ],
+    placements:[
+      {keys:["tree","equip_op"],label:"🌳 Especialista en Árboles y Campo"},
+      {keys:["garden","reliability"],label:"🥬 Especialista en Jardín y Cosecha"},
+      {keys:["animal","reliability"],label:"🐔 Especialista en Cuidado Animal"},
+      {keys:["equip_op","safety"],label:"🚜 Operador de Equipos"},
+      {keys:["equip_maint","safety"],label:"🔧 Especialista en Mecánica / Mantenimiento"},
+      {keys:["fence","building"],label:"🏗️ Especialista en Cercas y Propiedad"},
+      {keys:["building","fence"],label:"🔨 Especialista en Construcción"},
+      {keys:["leadership","reliability"],label:"👷 Potencial Líder de Cuadrilla"}
+    ]
+  }
+};
+
+const ARCHETYPES={
+  Hunter:{color:"#b45309",emoji:"🎯",
+    en:{name:"Hunter",tagline:"Gets things done. Fast.",
+      desc:"The Hunter is built for momentum. You don't wait for permission, you don't second-guess the plan — you move. When there's a deadline or a storm rolling in, you're the one who gets the job finished while others are still deciding where to start. Your value on a farm is unmistakable during crunch time: harvest pushes, emergency moves, back-to-back heavy days. You thrive on visible results, and you're at your best when the work is urgent and the stakes are real.",
+      deepInsight:"Your drive toward action comes from a deeply wired need for tangible progress. You process the world in terms of output — what got done, how fast, what's next. This is why you shine in high-pressure, time-sensitive situations: your brain is already calculating the fastest path from here to done. The flip side of this strength is impatience with systems that feel slow or unnecessary. You may find yourself cutting corners not out of laziness, but because your instincts are telling you the destination matters more than the route.",
+      vsOthers:"Compared to a Steward, who measures success in seasons, you measure it in days. Compared to a Scout, who moves slowly to observe deeply, you move quickly to act decisively. Your edge is execution speed — your risk is missing what you'd have seen if you'd slowed down for a moment.",
+      goodAt:["High-output harvest and seasonal pushes","Time-critical tasks that need rapid completion","Physical endurance through long, hard days","Energising a crew and setting the pace"],
+      bestFit:"Harvest operations, fast livestock moves, high-intensity seasonal labor",
+      frustrated:"Endless meetings, over-planning before action, tasks with no urgency",
+      struggles:"Detail-oriented slow work, long-term planning, tasks requiring patience",
+      wrongRole:"Becomes restless and disruptive — may cut corners or check out entirely",
+      manage:"Set clear targets and short timelines. Celebrate what gets finished. Pair with someone who will catch the details they skip. Don't slow them down with process — give them the problem and get out of the way."},
+    es:{name:"Cazador",tagline:"Hace las cosas. Rápido.",
+      desc:"El Cazador está construido para el movimiento. No esperas permiso ni dudas del plan — te mueves. Cuando hay una fecha límite o se acerca una tormenta, eres el que termina el trabajo mientras otros aún deciden por dónde empezar.",
+      deepInsight:"Tu impulso hacia la acción proviene de una necesidad profundamente arraigada de progreso tangible. Procesas el mundo en términos de producción — qué se hizo, qué tan rápido, qué sigue. Por eso brillas en situaciones de alta presión y urgencia.",
+      vsOthers:"Comparado con un Guardián, que mide el éxito en temporadas, tú lo mides en días. Comparado con un Explorador, que se mueve despacio para observar profundamente, tú te mueves rápido para actuar decisivamente.",
+      goodAt:["Cosecha de alta producción y empujones estacionales","Tareas urgentes que necesitan finalización rápida","Resistencia física durante días largos y duros","Energizar al equipo y marcar el ritmo"],
+      bestFit:"Operaciones de cosecha, movimientos rápidos de ganado, trabajo intensivo estacional",
+      frustrated:"Reuniones interminables, planificación excesiva, tareas sin urgencia",
+      struggles:"Trabajo lento orientado al detalle, planificación a largo plazo, tareas que requieren paciencia",
+      wrongRole:"Se vuelve inquieto y disruptivo — puede tomar atajos o desconectarse por completo",
+      manage:"Establece objetivos claros y plazos cortos. Celebra lo que se termina. Emparéjalo con alguien que capture los detalles que omite."}},
+  Steward:{color:"#15803d",emoji:"🌱",
+    en:{name:"Steward",tagline:"Takes care of what matters long-term.",
+      desc:"The Steward sees what others overlook: the slow decline in pasture condition, the herd that's not thriving quite the way it should, the soil that's giving less than it used to. You think in seasons and years, not just the task in front of you. On a farm, this is a rare and valuable gift — most people focus on what needs doing today. You're thinking about what the land will need next year, and the year after that.",
+      deepInsight:"Your long-term orientation isn't just a habit — it's how your mind is structured. You instinctively connect today's actions to tomorrow's consequences. This makes you extraordinary at building systems that last and catching decline before it becomes damage. The shadow of this strength is frustration when others don't share your timeline. When someone rushes a job or takes a shortcut, you feel it viscerally — because you can see exactly where that shortcut leads in six months.",
+      vsOthers:"Where a Hunter sees a task to complete, you see a system to protect. Where a Mechanic sees a machine to fix, you see the maintenance culture that prevents the breakdown in the first place. Your thinking operates at a different time horizon than most — and that's what makes you irreplaceable on a well-run operation.",
+      goodAt:["Soil health, pasture management, and rotational planning","Long-term herd or flock monitoring","Building and maintaining sustainable farm systems","Recognising slow decline before it becomes a crisis"],
+      bestFit:"Grazing programs, soil health, regenerative or organic operations, long-term planning roles",
+      frustrated:"Being rushed, having careful work undone, short-term thinking at the expense of the land",
+      struggles:"High-speed output environments, fast harvest pressure, urgent deadline work",
+      wrongRole:"Disengages quietly — stops offering insight and starts just going through the motions",
+      manage:"Pull them into the long-range planning conversations. Ask what they're seeing in the land and livestock. Give them the time and space to do things right. Don't keep overriding their judgment on land care."},
+    es:{name:"Guardián",tagline:"Cuida lo que importa a largo plazo.",
+      desc:"El Guardián ve lo que otros pasan por alto: el lento declive en la condición de los pastizales, el rebaño que no prospera como debería, el suelo que da menos que antes. Piensas en temporadas y años, no solo en la tarea frente a ti.",
+      deepInsight:"Tu orientación a largo plazo no es solo un hábito — es cómo está estructurada tu mente. Instintivamente conectas las acciones de hoy con las consecuencias de mañana. Esto te hace extraordinario para construir sistemas duraderos.",
+      vsOthers:"Donde un Cazador ve una tarea a completar, tú ves un sistema a proteger. Donde un Mecánico ve una máquina a reparar, tú ves la cultura de mantenimiento que previene la avería en primer lugar.",
+      goodAt:["Salud del suelo, gestión de pastizales y planificación rotacional","Monitoreo a largo plazo del ganado","Construcción de sistemas agrícolas sostenibles","Reconocer el declive lento antes de que se convierta en una crisis"],
+      bestFit:"Programas de pastoreo, salud del suelo, operaciones regenerativas, roles de planificación",
+      frustrated:"Ser apresurado, que su trabajo cuidadoso sea deshecho, pensamiento a corto plazo",
+      struggles:"Entornos de alta velocidad, presión de cosecha, trabajo con plazos urgentes",
+      wrongRole:"Se desconecta silenciosamente — deja de ofrecer perspectivas y empieza a seguir las mociones",
+      manage:"Involúcralos en conversaciones de planificación a largo plazo. Pregunta qué están viendo en la tierra y el ganado."}},
+  Mechanic:{color:"#1d4ed8",emoji:"🔧",
+    en:{name:"Mechanic",tagline:"If it's broken, they'll fix it.",
+      desc:"The Mechanic has a relationship with machinery that most people don't understand. You don't just fix things — you listen to them. An unusual noise, a slight hesitation in how an engine turns over, a vibration that wasn't there last week: you notice these things before they show up as a problem. On a farm where equipment failure means lost time and lost money, this ability is worth more than most people realise.",
+      deepInsight:"Your mechanical instinct is deeply tied to a systems-thinking mind. You see machines not as boxes that either work or don't, but as collections of interacting parts that each tell a story. When something fails, your instinct is to trace the failure back to its root — not just fix the symptom. This same pattern-recognition ability makes you excellent at preventing breakdowns through maintenance, because you can see the trajectory a worn part is on before it reaches its end.",
+      vsOthers:"Where a Resourcer improvises a fix from whatever's available, you want the right fix — done properly, with the right parts, documented, and not needing to be done again. Where an Organiser tracks what needs to happen, you're focused on making sure the equipment can execute those plans when the time comes.",
+      goodAt:["Routine preventive maintenance across all equipment","Diagnosing mechanical failures at the root cause","Keeping machinery operational during critical farm periods","Building and maintaining a proper maintenance culture"],
+      bestFit:"Equipment-heavy operations: large cropping, feedlots, irrigation, workshop/maintenance lead roles",
+      frustrated:"No maintenance schedule, being pulled off a repair mid-job, poor tool management",
+      struggles:"Livestock handling, interpersonal team dynamics, tasks with no mechanical component",
+      wrongRole:"Underutilised and frustrated — one of the most costly misplacements on any farm",
+      manage:"Respect their diagnosis. Give them dedicated maintenance time and proper tools. Let them build the preventive maintenance schedule — they'll take ownership of it."},
+    es:{name:"Mecánico",tagline:"Si está roto, lo arreglará.",
+      desc:"El Mecánico tiene una relación con la maquinaria que la mayoría de las personas no entiende. No solo arreglas cosas — las escuchas. Un ruido inusual, una ligera vacilación en cómo arranca un motor: notas estas cosas antes de que se conviertan en un problema.",
+      deepInsight:"Tu instinto mecánico está profundamente ligado a una mente de pensamiento sistémico. Ves las máquinas no como cajas que funcionan o no, sino como colecciones de partes que interactúan y cada una cuenta una historia.",
+      vsOthers:"Donde un Resolvedor improvisa una solución con lo que hay disponible, tú quieres la solución correcta — hecha apropiadamente, con las piezas correctas y documentada.",
+      goodAt:["Mantenimiento preventivo rutinario de todos los equipos","Diagnóstico de fallas mecánicas en la causa raíz","Mantener la maquinaria operativa durante períodos críticos","Construir y mantener una cultura de mantenimiento adecuada"],
+      bestFit:"Operaciones con mucho equipo: grandes cultivos, corrales de engorde, roles de mantenimiento",
+      frustrated:"Sin programa de mantenimiento, ser interrumpido en medio de una reparación",
+      struggles:"Manejo de ganado, dinámicas interpersonales del equipo, tareas sin componente mecánico",
+      wrongRole:"Subutilizado y frustrado — uno de los errores de asignación más costosos en cualquier granja",
+      manage:"Respeta su diagnóstico. Dales tiempo dedicado al mantenimiento y herramientas adecuadas."}},
+  Caretaker:{color:"#9333ea",emoji:"🐄",
+    en:{name:"Caretaker",tagline:"Animals are in good hands.",
+      desc:"The Caretaker has something that cannot be taught: a natural ease around animals that the animals themselves respond to. You walk into a pen and the animals settle. You notice the hen that's not eating before anyone else has even walked past. Your presence in the daily routine is not just convenient — it's the difference between an animal operation that runs and one that thrives.",
+      deepInsight:"Your connection to animals is rooted in a deep attentiveness to subtle signals. Where others see a flock, you see individuals — each with its own baseline of behaviour, and any deviation is a flag you register almost unconsciously. This same attentiveness makes you reliable in routine: you don't skip steps because you understand that with animals, the skipped step often shows up as a dead bird or a missed health problem three days later.",
+      vsOthers:"Where a Scout observes broadly across the whole farm, your observation is deep and focused on the animals in your care. Where a Hunter drives through tasks with speed, you understand that with livestock, rushing costs you — it costs the animal its trust, and you your ability to read it clearly.",
+      goodAt:["Daily livestock routines executed without fail","Early detection of health issues in individual animals","Building calm, low-stress handling environments","Maintaining the welfare and condition of livestock over time"],
+      bestFit:"Poultry, dairy, beef cattle, sheep, pigs — any livestock-intensive operation with daily care requirements",
+      frustrated:"Chaotic or inconsistent schedules, welfare standards that are too low, being pulled off animal duties",
+      struggles:"Heavy equipment operation, high-speed field work, analytical or administrative tasks",
+      wrongRole:"The animals suffer. Health problems compound. This is the most visible wrong-role consequence on a farm.",
+      manage:"Keep them close to the animals. Ask them what they're seeing — they will often know about a problem before it's visible. Protect their routine."},
+    es:{name:"Cuidador",tagline:"Los animales están en buenas manos.",
+      desc:"El Cuidador tiene algo que no se puede enseñar: una facilidad natural con los animales a la que los propios animales responden. Entras a un corral y los animales se calman. Notas la gallina que no está comiendo antes de que nadie más haya pasado.",
+      deepInsight:"Tu conexión con los animales está arraigada en una profunda atención a las señales sutiles. Donde otros ven un rebaño, tú ves individuos — cada uno con su propio comportamiento base, y cualquier desviación es una señal que registras casi inconscientemente.",
+      vsOthers:"Donde un Explorador observa ampliamente en toda la granja, tu observación es profunda y enfocada en los animales a tu cargo. Donde un Cazador avanza rápidamente por las tareas, entiendes que con el ganado, apresurarse te cuesta.",
+      goodAt:["Rutinas diarias de ganadería ejecutadas sin falta","Detección temprana de problemas de salud en animales individuales","Creación de entornos de manejo tranquilos y de bajo estrés","Mantenimiento del bienestar y la condición del ganado"],
+      bestFit:"Aves, lechería, ganado vacuno, ovejas, cerdos — cualquier operación ganadera intensiva",
+      frustrated:"Horarios caóticos o inconsistentes, estándares de bienestar demasiado bajos",
+      struggles:"Operación de equipos pesados, trabajo de campo de alta velocidad, tareas analíticas",
+      wrongRole:"Los animales sufren. Los problemas de salud se acumulan.",
+      manage:"Mantenlos cerca de los animales. Pregunta qué están viendo — a menudo sabrán sobre un problema antes de que sea visible."}},
+  Scout:{color:"#0891b2",emoji:"👁️",
+    en:{name:"Scout",tagline:"Sees what others miss.",
+      desc:"The Scout moves through a farm differently to everyone else. Where others are head-down in the task, you're reading the environment — the fence post that's shifted since last week, the patch of crop that's slightly off-colour, the paddock that's been overgrazed in one corner. You are the farm's early warning system, and in agriculture, early warnings prevent disasters.",
+      deepInsight:"Your observation strength is tied to a mind that processes change, not just current state. You naturally compare what you're seeing to an internal baseline of what things should look like — and anything that doesn't match that baseline triggers your attention. This is why you notice the things others walk straight past: they're looking at what is, you're looking at what's different from what was.",
+      vsOthers:"Where a Hunter focuses on execution, you focus on information. Where an Organiser tracks what's scheduled, you're picking up the unscheduled signals that indicate something important is changing. Your instinct is to observe first, act second — which puts you at odds with action-first archetypes, but makes you invaluable in a complex farm system.",
+      goodAt:["Crop scouting, pest monitoring, and early disease detection","Herd and flock health observation across large areas","Property and infrastructure inspection (fences, water, buildings)","Flagging problems before they escalate into costly failures"],
+      bestFit:"Large or complex properties, precision agriculture, IPM programs, property monitoring roles",
+      frustrated:"Being confined indoors, having concerns dismissed, chaotic high-noise environments",
+      struggles:"Decisive action under pressure, managing and directing others, repetitive high-output work",
+      wrongRole:"Problems go unnoticed and compound. The farm loses its early warning system.",
+      manage:"Listen when they flag something — their instincts are almost always right. Give them wide-ranging access to observe. Create a clear way for them to report what they're seeing."},
+    es:{name:"Explorador",tagline:"Ve lo que otros no ven.",
+      desc:"El Explorador se mueve por una granja de manera diferente a todos los demás. Donde otros están centrados en la tarea, tú lees el entorno — el poste de cerca que se ha movido desde la semana pasada, el parche de cultivo que tiene un color ligeramente incorrecto.",
+      deepInsight:"Tu fuerza de observación está vinculada a una mente que procesa el cambio, no solo el estado actual. Naturalmente comparas lo que ves con una línea base interna de cómo deberían verse las cosas — y cualquier cosa que no coincida con esa línea base activa tu atención.",
+      vsOthers:"Donde un Cazador se enfoca en la ejecución, tú te enfocas en la información. Donde un Organizador rastrea lo que está programado, tú captas las señales no programadas que indican que algo importante está cambiando.",
+      goodAt:["Monitoreo de cultivos, plagas y detección temprana de enfermedades","Observación de salud del ganado en grandes áreas","Inspección de propiedad e infraestructura","Señalar problemas antes de que escalen"],
+      bestFit:"Propiedades grandes o complejas, agricultura de precisión, roles de monitoreo de propiedades",
+      frustrated:"Estar confinado en interiores, que sus preocupaciones sean desestimadas",
+      struggles:"Acción decisiva bajo presión, gestionar y dirigir a otros, trabajo repetitivo de alta producción",
+      wrongRole:"Los problemas pasan desapercibidos y se acumulan. La granja pierde su sistema de alerta temprana.",
+      manage:"Escucha cuando señalan algo — sus instintos casi siempre son correctos. Dales acceso amplio para observar."}},
+  Organiser:{color:"#ea580c",emoji:"📋",
+    en:{name:"Organiser",tagline:"Runs a tight ship.",
+      desc:"The Organiser is the backbone of any operation that involves more than one person or more than one task happening at once. You hold the whole picture in your head — who's doing what, where the supplies are, what's coming next week, and whether the plan from Monday still makes sense given what happened Tuesday. Without this function, farms leak efficiency quietly and constantly.",
+      deepInsight:"Your strength is in managing complexity through structure. You instinctively create order around you — schedules, checklists, communication systems — not because you're rigid, but because you understand that clear systems free everyone else to do their job without constantly figuring out what that job is. The shadow of this strength is that disorder in others can feel personally threatening, because you can see exactly what it's going to cost.",
+      vsOthers:"Where a Hunter just moves and figures it out, you've already thought three steps ahead. Where a Resourcer improvises, you've already sourced the right parts before they were needed. You don't just respond to the farm — you anticipate it.",
+      goodAt:["Scheduling people, equipment, and tasks across a complex operation","Inventory, supply management, and procurement","Running crew meetings and keeping everyone aligned","Record-keeping, compliance, and administrative farm functions"],
+      bestFit:"Multi-staff operations, large cropping programs, feedlots, any farm needing a logistics backbone",
+      frustrated:"Last-minute chaos, colleagues who don't follow through, tasks without a clear process",
+      struggles:"Hands-on physical work, adapting when plans collapse, reading animal or land conditions",
+      wrongRole:"The operation loses its structure — costs rise, tasks fall through the cracks, stress spreads",
+      manage:"Give them the authority their role demands. Ask them to own the schedule. Don't create chaos and expect them to absorb it calmly — involve them in decisions that affect the plan."},
+    es:{name:"Organizador",tagline:"Lleva el barco firme.",
+      desc:"El Organizador es la columna vertebral de cualquier operación que involucra más de una persona o más de una tarea ocurriendo al mismo tiempo. Mantienes el panorama completo en tu cabeza.",
+      deepInsight:"Tu fortaleza está en gestionar la complejidad a través de la estructura. Instintivamente creas orden a tu alrededor — horarios, listas de verificación, sistemas de comunicación.",
+      vsOthers:"Donde un Cazador solo se mueve y lo resuelve, tú ya has pensado tres pasos adelante. Donde un Resolvedor improvisa, tú ya has conseguido las piezas correctas antes de que fueran necesarias.",
+      goodAt:["Programación de personas, equipos y tareas en una operación compleja","Inventario, gestión de suministros y adquisiciones","Reuniones de equipo y alineación","Mantenimiento de registros y funciones administrativas"],
+      bestFit:"Operaciones con múltiple personal, grandes programas de cultivo, corrales de engorde",
+      frustrated:"Caos de último momento, colegas que no cumplen, tareas sin proceso claro",
+      struggles:"Trabajo físico práctico, adaptarse cuando los planes colapsan, leer condiciones animales o de tierra",
+      wrongRole:"La operación pierde su estructura — los costos aumentan, las tareas se pierden",
+      manage:"Dales la autoridad que su rol demanda. Pídeles que sean dueños del horario."}},
+  Resourcer:{color:"#d97706",emoji:"⚙️",
+    en:{name:"Resourcer",tagline:"Finds a way. Always.",
+      desc:"The Resourcer is the person every farm needs when things go sideways — and on a farm, things always go sideways. The part that's not in stock, the weather that changed overnight, the plan that made sense yesterday but doesn't today. Where others see an obstacle, you see a puzzle. You adapt fast, improvise well, and you've usually got the problem 80% solved before anyone else has finished explaining it.",
+      deepInsight:"Your adaptability isn't just flexibility — it's a particular kind of intelligence that operates best under constraint. When resources are limited or the situation is novel, your thinking expands rather than contracts. You generate solutions that wouldn't occur to people who rely on standard procedures. The risk of this strength is under-valuing the systems and processes that prevent problems in the first place — because you're so good at solving them when they arise, you can sometimes underestimate what good prevention is worth.",
+      vsOthers:"Where a Mechanic insists on the proper fix with the proper parts, you can get the machine running again with what's on hand — then source the proper parts later. Where an Organiser plans to avoid the problem, you're the one who handles it when the plan didn't work.",
+      goodAt:["On-the-spot problem solving under real pressure","Improvised repairs that keep the operation moving","Adapting plans and methods when conditions change","Making the most of limited resources, older equipment, and tight budgets"],
+      bestFit:"Remote properties, mixed enterprises, operations with older equipment, emergency response roles",
+      frustrated:"Rigid bureaucratic systems, being told 'that's not how we do it', no room to try something different",
+      struggles:"Strict routine tasks, detailed documentation, high-precision work that doesn't tolerate improvisation",
+      wrongRole:"Bored, disengaged, and potentially creating unnecessary change just to feel stimulated",
+      manage:"Point them at the hard problems. Give them latitude to try things. Ask what they'd do differently — the answer is often worth hearing."},
+    es:{name:"Resolvedor",tagline:"Encuentra la manera. Siempre.",
+      desc:"El Resolvedor es la persona que cada granja necesita cuando las cosas salen mal — y en una granja, las cosas siempre salen mal. La pieza que no está en stock, el clima que cambió de noche, el plan que tenía sentido ayer pero hoy no.",
+      deepInsight:"Tu adaptabilidad no es solo flexibilidad — es un tipo particular de inteligencia que opera mejor bajo restricciones. Cuando los recursos son limitados o la situación es nueva, tu pensamiento se expande en lugar de contraerse.",
+      vsOthers:"Donde un Mecánico insiste en la reparación adecuada con las piezas adecuadas, puedes poner la máquina en marcha con lo que hay a mano. Donde un Organizador planifica para evitar el problema, tú eres el que lo maneja cuando el plan no funcionó.",
+      goodAt:["Resolución de problemas en el momento bajo presión real","Reparaciones improvisadas que mantienen la operación en movimiento","Adaptar planes y métodos cuando las condiciones cambian","Aprovechar al máximo recursos limitados"],
+      bestFit:"Propiedades remotas, empresas mixtas, operaciones con equipo antiguo, roles de respuesta a emergencias",
+      frustrated:"Sistemas burocráticos rígidos, que le digan 'así no se hace aquí', sin espacio para probar algo diferente",
+      struggles:"Tareas de rutina estricta, documentación detallada, trabajo de alta precisión",
+      wrongRole:"Aburrido, desconectado y potencialmente creando cambios innecesarios solo para sentirse estimulado",
+      manage:"Señálales los problemas difíciles. Dales libertad para probar cosas. Pregunta qué harían diferente."}},
+  Drover:{color:"#be123c",emoji:"🤠",
+    en:{name:"Drover",tagline:"Leads from the front.",
+      desc:"The Drover doesn't need a title to lead — people just follow them. You read a situation quickly, communicate what needs to happen without confusion, and you have a way of getting a crew moving that doesn't feel like management. Whether it's directing a mob of cattle or getting a team of casuals through a long harvest day, your presence changes the energy of the work.",
+      deepInsight:"Your leadership is rooted in a combination of decisive thinking and social intelligence. You read people as well as you read situations — you know who needs direct instruction, who needs space, who's flagging, and who's ready to step up. This social awareness makes your leadership feel natural rather than imposed. The shadow of this strength is that you may struggle when authority is unclear or when your judgment is second-guessed by people who haven't earned that right in your eyes.",
+      vsOthers:"Where an Organiser leads through systems and structure, you lead through presence and example. Where a Hunter drives output by going hard themselves, you multiply the output of the people around you. Your impact scales with team size — the more people you have to lead, the more your strength shows.",
+      goodAt:["Leading mixed crews through complex multi-day tasks","Livestock handling and movement in yards or open country","On-the-spot decision making when plans change","Mentoring and onboarding new farm workers"],
+      bestFit:"Large livestock operations, mustering teams, cropping operations with large casual workforces, foreman roles",
+      frustrated:"Working alone for extended periods, no authority to match responsibility, being managed poorly",
+      struggles:"Detailed administrative tasks, sitting still, tasks with no team or social component",
+      wrongRole:"Underutilised — may create informal leadership that conflicts with the formal structure",
+      manage:"Give them a team and real authority. Use them to build culture. Ask for their read on the people around them — it's usually accurate."},
+    es:{name:"Arriero",tagline:"Lidera desde el frente.",
+      desc:"El Arriero no necesita un título para liderar — la gente simplemente lo sigue. Lees una situación rápidamente, comunicas lo que necesita suceder sin confusión y tienes una manera de poner a un equipo en movimiento que no se siente como gestión.",
+      deepInsight:"Tu liderazgo está arraigado en una combinación de pensamiento decisivo e inteligencia social. Lees a las personas tan bien como lees las situaciones — sabes quién necesita instrucción directa, quién necesita espacio, quién está agotado.",
+      vsOthers:"Donde un Organizador lidera a través de sistemas y estructura, tú lideras a través de presencia y ejemplo. Donde un Cazador impulsa la producción yendo duro él mismo, tú multiplicas la producción de las personas a tu alrededor.",
+      goodAt:["Liderar equipos mixtos en tareas complejas de varios días","Manejo y movimiento de ganado en corrales o campo abierto","Toma de decisiones en el momento cuando los planes cambian","Mentoring e incorporación de nuevos trabajadores agrícolas"],
+      bestFit:"Grandes operaciones ganaderas, equipos de arreo, operaciones de cultivo con grandes fuerzas de trabajo eventuales",
+      frustrated:"Trabajar solo durante períodos prolongados, sin autoridad para igualar la responsabilidad",
+      struggles:"Tareas administrativas detalladas, permanecer quieto, tareas sin equipo o componente social",
+      wrongRole:"Subutilizado — puede crear liderazgo informal que entre en conflicto con la estructura formal",
+      manage:"Dales un equipo y autoridad real. Úsalos para construir cultura. Pide su lectura de las personas a su alrededor."}}
+};
+
+const QUESTIONS={
+  en:[
+    {q:"I'd rather be out doing something than sitting and planning it.",traits:["Action"],dir:1},
+    {q:"I notice when an animal isn't quite right before anyone else mentions it.",traits:["Observation"],dir:1},
+    {q:"I enjoy figuring out why a machine isn't working.",traits:["Mechanical"],dir:1},
+    {q:"I like knowing exactly what I'm doing each day — surprises frustrate me.",traits:["Routine"],dir:1},
+    {q:"I find it easy to stay calm when things go wrong and just work through it.",traits:["Adaptability"],dir:1},
+    {q:"I'd rather work with animals than operate machinery.",traits:["LivestockAffinity"],dir:1},
+    {q:"I feel best when I can see a clear result of my work at the end of the day.",traits:["Action"],dir:1},
+    {q:"I think about soil health and long-term land condition when I'm working.",traits:["LongTermThinking"],dir:1},
+    {q:"I'm good at keeping track of supplies, schedules, and what needs doing next.",traits:["Organisation"],dir:1},
+    {q:"When equipment breaks down, I'd rather fix it myself than wait for someone else.",traits:["Mechanical"],dir:1},
+    {q:"I tend to spot problems — pests, leaks, sick animals — before they become serious.",traits:["Observation"],dir:1},
+    {q:"I enjoy leading a team and making sure everyone knows what they're doing.",traits:["Leadership"],dir:1},
+    {q:"I work best when I can set my own pace and am not rushed.",traits:["Routine"],dir:1},
+    {q:"I get satisfaction from completing the same important task well, day after day.",traits:["Routine"],dir:1},
+    {q:"I like finding creative ways to solve problems when the usual approach won't work.",traits:["Adaptability"],dir:1},
+    {q:"I feel more comfortable working alone than managing other people.",traits:["Leadership"],dir:-1},
+    {q:"I'd rather take action quickly than wait until I have all the information.",traits:["Action"],dir:1},
+    {q:"I think about how the decisions we make now will affect the farm in 5 years.",traits:["LongTermThinking"],dir:1},
+    {q:"I can read a mob of cattle or sheep and know when something's off.",traits:["LivestockAffinity"],dir:1},
+    {q:"I enjoy the planning side of farming — what goes where, when, and how much.",traits:["Organisation"],dir:1},
+    {q:"I don't mind doing repetitive work as long as it matters.",traits:["Routine"],dir:1},
+    {q:"I can improvise with what's on hand when the right tools or parts aren't available.",traits:["Adaptability"],dir:1},
+    {q:"I like walking paddocks or checking fences — I notice things when I'm moving slowly.",traits:["Observation"],dir:1},
+    {q:"I'd choose working with machinery over working with livestock.",traits:["Mechanical"],dir:1},
+    {q:"When I'm managing others, I can get the best out of different kinds of people.",traits:["Leadership"],dir:1},
+    {q:"I tend to push hard to get a job finished, even if it means a long day.",traits:["Action"],dir:1},
+    {q:"I believe in doing things right for the land, even if it costs more time or money.",traits:["LongTermThinking"],dir:1},
+    {q:"I keep good records and make sure nothing important gets forgotten.",traits:["Organisation"],dir:1}
+  ],
+  es:[
+    {q:"Prefiero estar afuera haciendo algo que sentarme a planificarlo.",traits:["Action"],dir:1},
+    {q:"Noto cuando un animal no está bien antes de que alguien más lo mencione.",traits:["Observation"],dir:1},
+    {q:"Disfruto descubrir por qué una máquina no está funcionando.",traits:["Mechanical"],dir:1},
+    {q:"Me gusta saber exactamente lo que voy a hacer cada día — las sorpresas me frustran.",traits:["Routine"],dir:1},
+    {q:"Me resulta fácil mantener la calma cuando las cosas salen mal y seguir trabajando.",traits:["Adaptability"],dir:1},
+    {q:"Prefiero trabajar con animales que operar maquinaria.",traits:["LivestockAffinity"],dir:1},
+    {q:"Me siento mejor cuando puedo ver un resultado claro de mi trabajo al final del día.",traits:["Action"],dir:1},
+    {q:"Pienso en la salud del suelo y la condición de la tierra cuando estoy trabajando.",traits:["LongTermThinking"],dir:1},
+    {q:"Soy bueno llevando el control de suministros, horarios y lo que hay que hacer.",traits:["Organisation"],dir:1},
+    {q:"Cuando el equipo falla, prefiero arreglarlo yo mismo que esperar a alguien.",traits:["Mechanical"],dir:1},
+    {q:"Tiendo a detectar problemas — plagas, fugas, animales enfermos — antes de que se agraven.",traits:["Observation"],dir:1},
+    {q:"Disfruto liderar un equipo y asegurarme de que todos sepan lo que hacen.",traits:["Leadership"],dir:1},
+    {q:"Trabajo mejor cuando puedo establecer mi propio ritmo.",traits:["Routine"],dir:1},
+    {q:"Me satisface completar la misma tarea importante bien, día tras día.",traits:["Routine"],dir:1},
+    {q:"Me gusta encontrar formas creativas de resolver problemas.",traits:["Adaptability"],dir:1},
+    {q:"Me siento más cómodo trabajando solo que gestionando a otras personas.",traits:["Leadership"],dir:-1},
+    {q:"Prefiero actuar rápidamente que esperar hasta tener toda la información.",traits:["Action"],dir:1},
+    {q:"Pienso en cómo las decisiones de hoy afectarán la granja en 5 años.",traits:["LongTermThinking"],dir:1},
+    {q:"Puedo leer un grupo de ganado o ovejas y saber cuándo algo no está bien.",traits:["LivestockAffinity"],dir:1},
+    {q:"Disfruto el lado de planificación de la agricultura.",traits:["Organisation"],dir:1},
+    {q:"No me importa hacer trabajo repetitivo siempre que sea importante.",traits:["Routine"],dir:1},
+    {q:"Puedo improvisar con lo que tengo cuando las herramientas correctas no están disponibles.",traits:["Adaptability"],dir:1},
+    {q:"Me gusta caminar por los potreros o revisar cercas — noto cosas moviéndome despacio.",traits:["Observation"],dir:1},
+    {q:"Elegiría trabajar con maquinaria antes que con ganado.",traits:["Mechanical"],dir:1},
+    {q:"Cuando gestiono a otros, puedo sacar lo mejor de diferentes tipos de personas.",traits:["Leadership"],dir:1},
+    {q:"Tiendo a esforzarme para terminar un trabajo, aunque signifique un día largo.",traits:["Action"],dir:1},
+    {q:"Creo en hacer las cosas bien para la tierra, aunque cueste más tiempo o dinero.",traits:["LongTermThinking"],dir:1},
+    {q:"Llevo buenos registros y me aseguro de que nada importante se olvide.",traits:["Organisation"],dir:1}
+  ]
+};
+
+const AW={
+  Hunter:   {Action:5,Observation:1,Mechanical:1,Routine:-2,Adaptability:2,LivestockAffinity:1,LongTermThinking:0,Organisation:0,Leadership:2},
+  Steward:  {Action:0,Observation:3,Mechanical:0,Routine:2,Adaptability:2,LivestockAffinity:3,LongTermThinking:5,Organisation:2,Leadership:0},
+  Mechanic: {Action:2,Observation:2,Mechanical:5,Routine:2,Adaptability:2,LivestockAffinity:-1,LongTermThinking:1,Organisation:1,Leadership:0},
+  Caretaker:{Action:0,Observation:3,Mechanical:-1,Routine:4,Adaptability:1,LivestockAffinity:5,LongTermThinking:2,Organisation:1,Leadership:1},
+  Scout:    {Action:-1,Observation:5,Mechanical:1,Routine:2,Adaptability:2,LivestockAffinity:2,LongTermThinking:3,Organisation:1,Leadership:0},
+  Organiser:{Action:1,Observation:2,Mechanical:1,Routine:3,Adaptability:1,LivestockAffinity:0,LongTermThinking:2,Organisation:5,Leadership:3},
+  Resourcer:{Action:3,Observation:2,Mechanical:3,Routine:-2,Adaptability:5,LivestockAffinity:0,LongTermThinking:1,Organisation:0,Leadership:1},
+  Drover:   {Action:3,Observation:2,Mechanical:0,Routine:1,Adaptability:3,LivestockAffinity:3,LongTermThinking:1,Organisation:2,Leadership:5}
+};
+
+let lang="en",userName="",qIdx=0,qAnswers={};
+let instinctsRes=null,callyItemScores={};
+
+function setLang(l){
+  lang=l;
+  document.getElementById("btn-en").classList.toggle("active",l==="en");
+  document.getElementById("btn-es").classList.toggle("active",l==="es");
+  renderHome();
+}
+function renderHome(){
+  const L=T[lang];
+  document.getElementById("home-desc").innerHTML=L.homeDesc.replace(/\n/g,"<br>");
+  document.getElementById("btn-start").textContent=L.startBtn;
+}
+function goTo(p){["home","name","quiz","cally","result"].forEach(id=>document.getElementById("page-"+id).classList.toggle("hidden",id!==p));}
+
+document.getElementById("btn-start").onclick=()=>{
+  const L=T[lang];
+  document.getElementById("name-title").textContent=L.nameTitle;
+  document.getElementById("name-sub").textContent=L.nameSub;
+  document.getElementById("name-input").placeholder=L.namePH;
+  document.getElementById("btn-name-next").textContent=L.nameBtn;
+  goTo("name");
+};
+
+function onNameInput(){
+  const v=document.getElementById("name-input").value.trim();
+  document.getElementById("btn-name-next").classList.toggle("active",v.length>0);
+}
+function tryName(){
+  const v=document.getElementById("name-input").value.trim();
+  if(!v) return;
+  userName=v; qIdx=0; qAnswers={};
+  renderQ(); goTo("quiz");
+}
+
+function renderQ(){
+  const L=T[lang],qs=QUESTIONS[lang],q=qs[qIdx],tot=qs.length;
+  document.getElementById("q-counter").textContent=L.qOf(qIdx+1,tot);
+  const p=Math.round((qIdx/tot)*100);
+  document.getElementById("q-pct").textContent=L.pct(p);
+  document.getElementById("prog-fill").style.width=p+"%";
+  document.getElementById("q-text").textContent=`"${q.q}"`;
+  document.getElementById("btn-back").textContent=L.back;
+  const c=document.getElementById("opts"); c.innerHTML="";
+  L.aLabels.forEach((lbl,i)=>{
+    const b=document.createElement("button"); b.className="opt-btn";
+    b.innerHTML=`<span class="opt-num">${i+1}</span>${lbl}`;
+    b.onclick=()=>answerQ(i+1); c.appendChild(b);
+  });
+}
+function answerQ(v){
+  qAnswers[qIdx]=v;
+  if(qIdx<QUESTIONS[lang].length-1){qIdx++;renderQ();}
+  else{instinctsRes=calcInstincts();buildCallyPage();goTo("cally");}
+}
+function quizBack(){if(qIdx>0){qIdx--;renderQ();}else goTo("name");}
+
+function calcInstincts(){
+  const keys=["Action","Observation","Mechanical","Routine","Adaptability","LivestockAffinity","LongTermThinking","Organisation","Leadership"];
+  const raw={},cnt={};
+  keys.forEach(t=>{raw[t]=0;cnt[t]=0;});
+  QUESTIONS[lang].forEach((q,i)=>{const v=qAnswers[i]||3;q.traits.forEach(t=>{raw[t]+=v*q.dir;cnt[t]++;});});
+  const sc={};
+  keys.forEach(t=>{const mx=cnt[t]*5,mn=cnt[t]*1;sc[t]=Math.round(((raw[t]-mn)/(mx-mn))*10);});
+  const as={};
+  Object.entries(AW).forEach(([a,w])=>{let s=0;Object.entries(w).forEach(([t,v])=>s+=(sc[t]||5)*v);as[a]=s;});
+  const sorted=Object.entries(as).sort((a,b)=>b[1]-a[1]);
+  return{scores:sc,primary:sorted[0][0],secondary:sorted[1][0]};
+}
+
+// Flatten all cally items into one ordered list
+function buildCallyItems(){
+  const L=T[lang]; const all=[];
+  L.sections.forEach(sec=>{
+    callyItemScores[sec.key]=new Array(sec.items.length).fill(0);
+    sec.items.forEach((item,ii)=>all.push({key:sec.key,idx:ii,text:"I prefer to "+item.replace(/^I\s+/i,""),max:sec.max}));
+  });
+  return all;
+}
+
+let callyItems=[], callyQIdx=0;
+
+function buildCallyPage(){
+  callyItemScores={};
+  callyItems=buildCallyItems();
+  callyQIdx=0;
+  renderCallyQ();
+}
+
+function renderCallyQ(){
+  const L=T[lang];
+  const total=callyItems.length;
+  const item=callyItems[callyQIdx];
+  const pct=Math.round((callyQIdx/total)*100);
+
+  document.getElementById("cally-title").textContent=L.callyTitle;
+  document.getElementById("cally-sub").textContent="";
+  document.getElementById("btn-cally-submit").style.display="none";
+
+  const body=document.getElementById("cally-body");
+  body.innerHTML=`
+    <div class="quiz-meta" style="margin-bottom:8px">
+      <span style="color:#a8a29e;font-size:13px">${lang==="en"?"Statement":"Afirmación"} ${callyQIdx+1} ${lang==="en"?"of":"de"} ${total}</span>
+      <span style="color:#d97706;font-size:13px;font-weight:bold">${pct}% ${lang==="en"?"done":"completado"}</span>
+    </div>
+    <div class="prog-bar" style="margin-bottom:32px"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="q-card"><p>${item.text}</p></div>
+    <div class="opts" id="cally-opts"></div>
+    <button class="btn-back" onclick="callyBack()" style="margin-top:20px">${L.back}</button>`;
+
+  const opts=document.getElementById("cally-opts");
+  L.ratingLabels.forEach((lbl,i)=>{
+    const v=i+1, b=document.createElement("button"); b.className="opt-btn";
+    const cur=callyItemScores[item.key]?.[item.idx]||0;
+    if(cur===v) b.style.cssText="background:rgba(217,119,6,.2);border-color:#d97706";
+    b.innerHTML=`<span class="opt-num">${v}</span>${lbl}`;
+    b.onclick=()=>answerCallyQ(v);
+    opts.appendChild(b);
+  });
+}
+
+function answerCallyQ(v){
+  const item=callyItems[callyQIdx];
+  callyItemScores[item.key][item.idx]=v;
+  if(callyQIdx<callyItems.length-1){ callyQIdx++; renderCallyQ(); }
+  else showResult();
+}
+
+function callyBack(){
+  if(callyQIdx>0){ callyQIdx--; renderCallyQ(); }
+  else { qIdx=QUESTIONS[lang].length-1; renderQ(); goTo("quiz"); }
+}
+
+function submitCally(){showResult();}
+
+function showResult(){
+  const L=T[lang],wrap=document.getElementById("result-wrap");
+  wrap.innerHTML="";
+  const {scores,primary,secondary}=instinctsRes;
+  const pa=ARCHETYPES[primary][lang],sa=ARCHETYPES[secondary][lang];
+  const pc=ARCHETYPES[primary].color,se=ARCHETYPES[secondary].emoji,pe=ARCHETYPES[primary].emoji;
+
+  // HERO
+  wrap.innerHTML+=`
+  <div class="reveal-hero">
+    <div class="reveal-badge">${lang==="en"?"Farm Instincts Report":"Informe de Instintos de Campo"}</div>
+    <div class="reveal-emoji">${pe}</div>
+    <div class="reveal-name">${userName}</div>
+    <div class="reveal-archetype" style="color:${pc}">The ${pa.name}</div>
+    <div class="reveal-tagline">"${pa.tagline}"</div>
+    <div class="reveal-desc">${pa.desc}</div>
+    <div class="reveal-secondary">${lang==="en"?"Secondary instinct":"Instinto secundario"}: <strong>${se} The ${sa.name}</strong></div>
+  </div>`;
+
+  // DEEP INSIGHT
+  div(wrap,`${lang==="en"?"🔍 The Hidden Truth About You":"🔍 La Verdad Oculta Sobre Ti"}`,[
+    {icon:"▸",text:pa.deepInsight}
+  ],"insight");
+
+  // TRAIT SCORES
+  sdiv(wrap,lang==="en"?"Your Trait Profile":"Tu Perfil de Rasgos");
+  const sc1=mkInsight(); sc1.querySelector(".insight-card-header").innerHTML=`<h3>${lang==="en"?"Strength Scores Across 9 Farm Traits":"Puntuaciones en 9 Rasgos Agrícolas"}</h3><p>${lang==="en"?"Each score reflects how strongly this trait showed up in your responses":"Cada puntuación refleja qué tan fuertemente apareció este rasgo en tus respuestas"}</p>`;
+  const sb=sc1.querySelector(".insight-card-body");
+  const sortedTraits=Object.entries(L.sTitles).sort((a,b)=>(scores[b[0]]||0)-(scores[a[0]]||0));
+  sortedTraits.forEach(([t,label])=>{
+    const v=Math.max(0,Math.min(10,scores[t]??5));
+    const cls=v>=7?"score-high":v>=4?"score-mid":"score-low";
+    const lvl=v>=7?(lang==="en"?"High":"Alto"):v>=4?(lang==="en"?"Moderate":"Moderado"):(lang==="en"?"Low":"Bajo");
+    const col=v>=7?"#4ade80":v>=4?"#fbbf24":"#9ca3af";
+    sb.innerHTML+=`<div class="strength-bar-row"><div class="strength-bar-top"><span class="strength-bar-label">${label}</span><span class="strength-bar-score ${cls}">${lvl} · ${v}/10</span></div><div class="strength-track"><div class="strength-fill" style="width:${v*10}%;background:${col}"></div></div></div>`;
+  });
+  wrap.appendChild(sc1);
+
+  // VS OTHERS
+  div(wrap,lang==="en"?"⚡ How You Compare to Other Types":"⚡ Cómo Te Comparas con Otros Tipos",[
+    {icon:"▸",text:pa.vsOthers}
+  ],"insight");
+
+  // TOP vs BOTTOM traits
+  sdiv(wrap,lang==="en"?"Where You Lead vs. Where You Don't":"Donde Lideras vs. Donde No");
+  const tc=mkInsight(); tc.querySelector(".insight-card-header").innerHTML=`<h3>${lang==="en"?"Your Strongest vs. Least Active Instincts":"Tus Instintos Más Fuertes vs. Menos Activos"}</h3>`;
+  const topT=sortedTraits.slice(0,2),botT=sortedTraits.slice(-2);
+  tc.querySelector(".insight-card-body").innerHTML=`<div class="trait-compare">
+    ${topT.map(([t,l])=>`<div class="trait-box strong"><div class="trait-box-label">${lang==="en"?"✦ Natural Strength":"✦ Fortaleza Natural"}</div><p><strong>${l}</strong><br>${traitInsight(t,lang,true)}</p></div>`).join("")}
+    ${botT.map(([t,l])=>`<div class="trait-box weak"><div class="trait-box-label">${lang==="en"?"◇ Lower Instinct":"◇ Instinto Menor"}</div><p><strong>${l}</strong><br>${traitInsight(t,lang,false)}</p></div>`).join("")}
+  </div>`;
+  wrap.appendChild(tc);
+
+  // COMBINED BEST AT — instincts + cally scores fused
+  sdiv(wrap,lang==="en"?"What You Were Built For":"Para Qué Fuiste Hecho");
+  const secTotalsEarly={};
+  L.sections.forEach(sec=>{const items=callyItemScores[sec.key]||[];secTotalsEarly[sec.key]={tot:items.reduce((a,b)=>a+b,0),max:sec.max};});
+
+  // Find top cally sections (pct >= 55%)
+  const topCally=L.sections.filter(sec=>{
+    const{tot,max}=secTotalsEarly[sec.key]||{tot:0,max:1};
+    return (tot/max)>=0.55;
+  }).sort((a,b)=>{
+    const pa2=secTotalsEarly[b.key].tot/secTotalsEarly[b.key].max;
+    const pb2=secTotalsEarly[a.key].tot/secTotalsEarly[a.key].max;
+    return pa2-pb2;
+  }).slice(0,4);
+
+  // Build combined insight bullets merging archetype goodAt + top cally areas
+  const combinedInsights=[];
+  pa.goodAt.forEach(g=>combinedInsights.push(`<strong>${lang==="en"?"Instinct":"Instinto"}:</strong> ${g}`));
+  topCally.forEach(sec=>{
+    const{tot,max}=secTotalsEarly[sec.key];
+    const pct=Math.round((tot/max)*100);
+    combinedInsights.push(`<strong>${lang==="en"?"Demonstrated":"Demostrado"} · ${sec.title}:</strong> ${lang==="en"?`Scored ${tot}/${max} (${pct}%) — this confirms a genuine operational strength, not just a natural tendency`:`Puntuó ${tot}/${max} (${pct}%) — esto confirma una fortaleza operativa genuina, no solo una tendencia natural`}`);
+  });
+
+  // Build synthesised "best at" paragraph
+  const topCallyNames=topCally.map(s=>s.title).join(", ")||pa.bestFit;
+  const synthText=lang==="en"
+    ?`Combining your instinct profile (<em>The ${pa.name}</em>) with your Cally Farms skills scores, ${userName} shows the strongest real-world alignment in: <strong>${topCallyNames||pa.bestFit}</strong>. Your natural tendencies reinforce your demonstrated abilities — meaning these aren't just areas you're drawn to, they're areas where you consistently perform. This is where you should be placed first.`
+    :` Combinando tu perfil de instinto (<em>El ${pa.name}</em>) con tus puntajes de habilidades de Cally Farms, ${userName} muestra la alineación más fuerte del mundo real en: <strong>${topCallyNames||pa.bestFit}</strong>. Tus tendencias naturales refuerzan tus habilidades demostradas — lo que significa que estas no son solo áreas a las que te atraes, son áreas donde consistentemente te desempeñas bien.`;
+
+  const ga=mkInsight("card-green"); ga.querySelector(".insight-card-header").innerHTML=`<h3>${lang==="en"?"Your True Strengths — Instinct + Evidence Combined":"Tus Verdaderas Fortalezas — Instinto + Evidencia Combinados"}</h3><p>${lang==="en"?"Where your wiring and your skills meet":"Donde tu naturaleza y tus habilidades se encuentran"}</p>`;
+  ga.querySelector(".insight-card-body").innerHTML=`<div class="insight-row"><div class="insight-dot"></div><div class="insight-text" style="margin-bottom:14px">${synthText}</div></div><div class="good-at-grid">${combinedInsights.map(g=>`<div class="good-at-item"><div class="good-at-icon">✦</div><div class="good-at-text">${g}</div></div>`).join("")}</div>`;
+  wrap.appendChild(ga);
+
+  // WATCH-OUTS
+  sdiv(wrap,lang==="en"?"Know Your Limits":"Conoce Tus Límites");
+  const wo=mkInsight();wo.querySelector(".insight-card-header").innerHTML=`<h3>${lang==="en"?"Watch-Outs":"Puntos de Atención"}</h3><p>${lang==="en"?"These aren't weaknesses — they're signals to build awareness around":"Estos no son debilidades — son señales para construir conciencia"}</p>`;
+  wo.querySelector(".insight-card-body").innerHTML=`
+    <div class="watchout-item"><div class="watchout-label">${lang==="en"?"Gets Frustrated By":"Se Frustra Con"}</div><div class="watchout-text">${pa.frustrated}</div></div>
+    <div class="watchout-item"><div class="watchout-label">${lang==="en"?"Tends to Struggle With":"Tiende a Tener Dificultades Con"}</div><div class="watchout-text">${pa.struggles}</div></div>
+    <div class="watchout-item"><div class="watchout-label">${lang==="en"?"In the Wrong Role":"En el Rol Equivocado"}</div><div class="watchout-text">${pa.wrongRole}</div></div>`;
+  wrap.appendChild(wo);
+
+  // MANAGE
+  const mg=mkInsight("card-blue"); mg.querySelector(".insight-card-header").innerHTML=`<h3>${lang==="en"?"For Farm Owners & Managers":"Para Propietarios y Gerentes"}</h3><p>${lang==="en"?"How to get the best from this person":"Cómo obtener lo mejor de esta persona"}</p>`;
+  mg.querySelector(".insight-card-body").innerHTML=`<div class="manage-box"><p>${pa.manage}</p></div>`;
+  wrap.appendChild(mg);
+
+  // CALLY SCORES
+  sdiv(wrap,lang==="en"?"🏡 Cally Farms Skills Profile":"🏡 Perfil de Habilidades Cally Farms");
+  const cs=mkInsight(); cs.querySelector(".insight-card-header").innerHTML=`<h3>${lang==="en"?"Skills Assessment Across 10 Farm Areas":"Evaluación de Habilidades en 10 Áreas Agrícolas"}</h3>`;
+  const csb=cs.querySelector(".insight-card-body");
+  const secTotals={};
+  L.sections.forEach(sec=>{
+    const items=callyItemScores[sec.key]||[];
+    const tot=items.reduce((a,b)=>a+b,0);
+    secTotals[sec.key]={tot,max:sec.max};
+  });
+  csb.innerHTML=`<div class="cally-result-grid">${L.sections.map(sec=>{
+    const{tot,max}=secTotals[sec.key]||{tot:0,max:sec.max};
+    const pct=Math.round((tot/max)*100);
+    const col=pct<40?"#9ca3af":pct<70?"#fbbf24":"#4ade80";
+    return`<div class="cally-metric"><div class="cally-metric-title">${sec.title}</div><div class="cally-metric-bar-bg"><div class="cally-metric-bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="cally-metric-score"><strong>${tot}</strong>/${max}</div></div>`;
+  }).join("")}</div>`;
+  wrap.appendChild(cs);
+
+  // PLACEMENT
+  const pl=mkInsight("card-green"); pl.querySelector(".insight-card-header").innerHTML=`<h3>${L.callyPlacement}</h3><p>${lang==="en"?"Based on your highest scoring areas":"Basado en tus áreas con mayor puntuación"}</p>`;
+  const pills=document.createElement("div"); pills.className="placement-row";
+  let anyPlacement=false;
+  L.placements.forEach(p=>{
+    const avg=p.keys.reduce((s,k)=>s+(secTotals[k]?secTotals[k].tot/secTotals[k].max:0),0)/p.keys.length;
+    if(avg>=0.55){const pill=document.createElement("span");pill.className="placement-pill";pill.textContent=p.label;pills.appendChild(pill);anyPlacement=true;}
+  });
+  if(!anyPlacement) pills.innerHTML=`<span style="color:#78716c;font-size:14px">${lang==="en"?"Complete more items to see role recommendations":"Completa más elementos para ver recomendaciones de roles"}</span>`;
+  pl.querySelector(".insight-card-body").appendChild(pills);
+  wrap.appendChild(pl);
+
+  // EXPORT
+  wrap.innerHTML+=`
+  <div class="export-strip">
+    <h3>${L.exportTitle}</h3>
+    <p>${L.exportSub}</p>
+    <div class="export-btns">
+      <button class="btn-export" onclick="printReport()">🖨 ${L.exportPrint}</button>
+    </div>
+  </div>
+  <button class="btn-restart" onclick="restart()">${L.restart}</button>`;
+
+  goTo("result");
+}
+
+function traitInsight(trait,lang,high){
+  const map={
+    Action:{en:{hi:"You're energised by momentum and visible output — perfect for high-pressure farm roles.",lo:"You tend to favour observation and planning over rapid execution."},es:{hi:"Te energiza el impulso y los resultados visibles — perfecto para roles agrícolas de alta presión.",lo:"Tiendes a favorecer la observación y la planificación sobre la ejecución rápida."}},
+    Observation:{en:{hi:"You naturally notice small changes in animals, crops, and land before others do.",lo:"Your strength lies in action and execution rather than passive monitoring."},es:{hi:"Naturalmente notas pequeños cambios en animales, cultivos y tierra antes que otros.",lo:"Tu fortaleza está en la acción y ejecución más que en el monitoreo pasivo."}},
+    Mechanical:{en:{hi:"You have a strong intuitive feel for how machinery works and when it's going wrong.",lo:"You're more drawn to biological and land-based work than mechanical systems."},es:{hi:"Tienes una fuerte intuición sobre cómo funciona la maquinaria y cuándo algo va mal.",lo:"Te atraen más los sistemas biológicos y de tierra que los mecánicos."}},
+    Routine:{en:{hi:"You find deep satisfaction in consistent, repeatable daily work done well.",lo:"You thrive in environments that change and adapt — rigid routine can feel limiting."},es:{hi:"Encuentras profunda satisfacción en el trabajo diario consistente y repetible bien hecho.",lo:"Prosperas en entornos que cambian y se adaptan — la rutina rígida puede sentirse limitante."}},
+    Adaptability:{en:{hi:"When plans fall apart, you stay clear-headed and find the path forward fast.",lo:"You work best with clear plans and predictable conditions rather than improvised solutions."},es:{hi:"Cuando los planes fallan, mantienes la cabeza clara y encuentras el camino a seguir rápidamente.",lo:"Trabajas mejor con planes claros y condiciones predecibles que con soluciones improvisadas."}},
+    LivestockAffinity:{en:{hi:"Animals respond to your presence — you read them intuitively and they settle around you.",lo:"Your strengths lie more in land, equipment, or people management than animal care."},es:{hi:"Los animales responden a tu presencia — los lees intuitivamente y se calman a tu alrededor.",lo:"Tus fortalezas están más en tierra, equipos o gestión de personas que en el cuidado animal."}},
+    LongTermThinking:{en:{hi:"You naturally connect today's farm decisions to their long-term consequences on the land.",lo:"Your energy goes into immediate execution rather than long-horizon planning."},es:{hi:"Naturalmente conectas las decisiones agrícolas de hoy con sus consecuencias a largo plazo.",lo:"Tu energía va hacia la ejecución inmediata más que la planificación a largo plazo."}},
+    Organisation:{en:{hi:"You keep complex operations running by holding the plan together in your head.",lo:"You're more comfortable improvising and adapting than maintaining rigid systems."},es:{hi:"Mantienes operaciones complejas funcionando al mantener el plan junto en tu cabeza.",lo:"Te sientes más cómodo improvisando y adaptando que manteniendo sistemas rígidos."}},
+    Leadership:{en:{hi:"People naturally look to you for direction — you communicate clearly and earn trust fast.",lo:"You work best as an independent contributor rather than directing others."},es:{hi:"Las personas naturalmente te buscan para dirección — comunicas claramente y ganas confianza rápidamente.",lo:"Trabajas mejor como colaborador independiente que dirigiendo a otros."}}
+  };
+  const d=map[trait];
+  if(!d) return "";
+  return d[lang]?.[high?"hi":"lo"]||"";
+}
+
+function sdiv(parent,text){parent.innerHTML+=`<div class="section-divider"><span>${text}</span></div>`;}
+function div(parent,title,rows,type="insight"){
+  const c=mkInsight(); c.querySelector(".insight-card-header").innerHTML=`<h3>${title}</h3>`;
+  c.querySelector(".insight-card-body").innerHTML=rows.map(r=>`<div class="insight-row"><div class="insight-dot"></div><div class="insight-text">${r.text}</div></div>`).join("");
+  parent.appendChild(c);
+}
+function mkInsight(extra=""){
+  const d=document.createElement("div"); d.className="insight-card "+extra;
+  d.innerHTML='<div class="insight-card-header"></div><div class="insight-card-body"></div>';
+  return d;
+}
+
+function printReport(){
+  const L=T[lang];
+  const {primary,secondary,scores}=instinctsRes;
+  const pa=ARCHETYPES[primary][lang],sa=ARCHETYPES[secondary][lang];
+  const secTotals={};
+  L.sections.forEach(sec=>{const items=callyItemScores[sec.key]||[];secTotals[sec.key]={tot:items.reduce((a,b)=>a+b,0),max:sec.max};});
+  const topCally=L.sections.filter(sec=>{const{tot,max}=secTotals[sec.key]||{tot:0,max:1};return(tot/max)>=0.55;}).sort((a,b)=>(secTotals[b.key].tot/secTotals[b.key].max)-(secTotals[a.key].tot/secTotals[a.key].max));
+  const topCallyNames=topCally.map(s=>s.title).join(", ")||pa.bestFit;
+  const date=new Date().toLocaleDateString();
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Farm Instincts — ${userName}</title>
+<style>
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#fff;color:#1a1a1a;padding:40px;max-width:780px;margin:0 auto}
+.hero{background:#1a0f00;border-radius:14px;padding:36px 28px;text-align:center;margin-bottom:32px}
+.hero-badge{display:inline-block;background:rgba(217,119,6,.25);border:1px solid rgba(217,119,6,.5);border-radius:20px;padding:5px 16px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#d97706;margin-bottom:14px}
+.hero-emoji{font-size:56px;display:block;margin-bottom:10px}
+.hero-who{color:#78716c;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.hero-arch{font-size:32px;font-weight:bold;color:#d97706;margin-bottom:6px}
+.hero-tag{color:#fef3c7;font-size:15px;font-style:italic;margin-bottom:12px}
+.hero-sec{background:rgba(255,255,255,.06);border-radius:8px;display:inline-block;padding:8px 16px;font-size:12px;color:#78716c}
+.hero-sec strong{color:#a8a29e}
+h2{font-size:13px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#d97706;border-bottom:1px solid #e5e7eb;padding-bottom:6px;margin:28px 0 12px}
+p,li{font-size:14px;line-height:1.8;color:#374151;margin-bottom:8px}
+ul{padding-left:18px;margin-bottom:12px}
+.insight-box{background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;padding:16px 18px;margin-bottom:12px}
+.insight-box.green{background:#f0fdf4;border-color:#bbf7d0}
+.insight-box.amber{background:#fffbeb;border-color:#fde68a}
+.insight-box.red{background:#fef2f2;border-color:#fecaca}
+.insight-box.blue{background:#eff6ff;border-color:#bfdbfe}
+.insight-label{font-size:11px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;margin-bottom:4px}
+.bar-row{margin-bottom:10px}
+.bar-top{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:4px}
+.bar-bg{background:#f3f4f6;border-radius:4px;height:8px}
+.bar-fill{height:8px;border-radius:4px;background:#d97706}
+.cally-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.cally-cell{background:#fafafa;border:1px solid #e5e7eb;border-radius:8px;padding:10px 12px}
+.cally-cell-title{font-size:11px;font-weight:bold;color:#6b7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.pill{display:inline-block;background:#fffbeb;border:1px solid #d97706;border-radius:20px;padding:5px 12px;margin:3px;font-size:12px;color:#92400e}
+footer{margin-top:40px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center}
+</style></head><body>
+<div class="hero">
+  <div class="hero-badge">Farm Instincts Report</div>
+  <span class="hero-emoji">${ARCHETYPES[primary].emoji}</span>
+  <div class="hero-who">${userName}</div>
+  <div class="hero-arch">The ${pa.name}</div>
+  <div class="hero-tag">"${pa.tagline}"</div>
+  <div class="hero-sec">${lang==="en"?"Secondary instinct":"Instinto secundario"}: <strong>${ARCHETYPES[secondary].emoji} The ${sa.name}</strong></div>
+</div>
+
+<h2>${lang==="en"?"Who You Are":"Quién Eres"}</h2>
+<div class="insight-box"><p>${pa.desc}</p></div>
+
+<h2>${lang==="en"?"The Hidden Truth About You":"La Verdad Oculta Sobre Ti"}</h2>
+<div class="insight-box amber"><p>${pa.deepInsight}</p></div>
+
+<h2>${lang==="en"?"How You Compare to Other Types":"Cómo Te Comparas con Otros Tipos"}</h2>
+<div class="insight-box"><p>${pa.vsOthers}</p></div>
+
+<h2>${lang==="en"?"Trait Scores":"Puntuaciones de Rasgos"}</h2>
+${Object.entries(L.sTitles).sort((a,b)=>(scores[b[0]]??5)-(scores[a[0]]??5)).map(([t,l])=>{const v=Math.max(0,Math.min(10,scores[t]??5));const col=v>=7?"#4ade80":v>=4?"#fbbf24":"#9ca3af";return`<div class="bar-row"><div class="bar-top"><span>${l}</span><span>${v}/10</span></div><div class="bar-bg"><div class="bar-fill" style="width:${v*10}%;background:${col}"></div></div></div>`;}).join("")}
+
+<h2>${lang==="en"?"Your True Strengths — Instinct + Evidence":"Tus Verdaderas Fortalezas — Instinto + Evidencia"}</h2>
+<div class="insight-box green">
+  <p>${lang==="en"?`Combining instinct profile (<em>The ${pa.name}</em>) with Cally Farms skills scores, <strong>${userName}</strong> shows strongest alignment in: <strong>${topCallyNames}</strong>. These aren't just areas of natural tendency — they're confirmed operational strengths.`:`Combinando el perfil de instinto (<em>El ${pa.name}</em>) con los puntajes de Cally Farms, <strong>${userName}</strong> muestra la mayor alineación en: <strong>${topCallyNames}</strong>.`}</p>
+  <ul>${pa.goodAt.map(g=>`<li>${g}</li>`).join("")}</ul>
+  ${topCally.map(sec=>{const{tot,max}=secTotals[sec.key];const pct=Math.round((tot/max)*100);return`<div class="bar-row"><div class="bar-top"><span>${sec.title}</span><span>${tot}/${max} (${pct}%)</span></div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div></div>`;}).join("")}
+</div>
+
+<h2>${lang==="en"?"Watch-Outs":"Puntos de Atención"}</h2>
+<div class="insight-box red">
+  <div class="insight-label">${lang==="en"?"Gets Frustrated By":"Se Frustra Con"}</div><p>${pa.frustrated}</p>
+  <div class="insight-label">${lang==="en"?"Struggles With":"Dificultades Con"}</div><p>${pa.struggles}</p>
+  <div class="insight-label">${lang==="en"?"In the Wrong Role":"En el Rol Equivocado"}</div><p>${pa.wrongRole}</p>
+</div>
+
+<h2>${lang==="en"?"For Farm Owners & Managers":"Para Propietarios y Gerentes"}</h2>
+<div class="insight-box blue"><p>${pa.manage}</p></div>
+
+<h2>🏡 ${lang==="en"?"Cally Farms Skills Profile":"Perfil de Habilidades Cally Farms"}</h2>
+<div class="cally-grid">${L.sections.map(sec=>{const{tot,max}=secTotals[sec.key]||{tot:0,max:sec.max};const pct=Math.round((tot/max)*100);const col=pct<40?"#9ca3af":pct<70?"#fbbf24":"#4ade80";return`<div class="cally-cell"><div class="cally-cell-title">${sec.title}</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div><div style="font-size:11px;color:#9ca3af;margin-top:4px">${tot}/${max}</div></div>`;}).join("")}</div>
+
+<h2>${lang==="en"?"Recommended Roles":"Roles Recomendados"}</h2>
+${L.placements.filter(p=>{const avg=p.keys.reduce((s,k)=>s+(secTotals[k]?secTotals[k].tot/secTotals[k].max:0),0)/p.keys.length;return avg>=0.55;}).map(p=>`<span class="pill">${p.label}</span>`).join("")||`<p style="color:#9ca3af;font-size:13px">${lang==="en"?"No strong role match yet — more responses needed":"Aún no hay una coincidencia de rol fuerte"}</p>`}
+
+<footer>Farm Instincts Strengths Assessment &nbsp;·&nbsp; ${userName} &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; Cally Farms</footer>
+</body></html>`;
+
+  const w=window.open("","_blank","width=900,height=700");
+  if(w){
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    setTimeout(()=>w.print(),600);
+  } else {
+    alert(lang==="en"?"Please allow pop-ups for this site to open your report.":"Por favor permite ventanas emergentes para abrir tu informe.");
+  }
+}
+
+function restart(){
+  qIdx=0;qAnswers={};instinctsRes=null;callyItemScores={};
+  document.getElementById("name-input").value="";
+  document.getElementById("btn-name-next").classList.remove("active");
+  goTo("home");
+}
+
+renderHome();
+</script>
+</body>
+</html>
